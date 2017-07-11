@@ -18,12 +18,20 @@ namespace QuickstartIdentityServer
     {
         private readonly IHostingEnvironment _environment;
 
+		private string _clientId = "xxxxxx";
+        private string _clientSecret = "xxxxx";
+		
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+
+			if (env.IsDevelopment())
+            {
+                builder.AddUserSecrets("AspNetCoreID4External-c23d2237a4-eb8832a1-452ac7");
+            }
 
             _environment = env;
 
@@ -36,6 +44,9 @@ namespace QuickstartIdentityServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+			_clientId = Configuration["clientId"];
+            _clientSecret = Configuration["clientSecret"];
+			
             var cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "damienbodserver.pfx"), "");
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -82,13 +93,13 @@ namespace QuickstartIdentityServer
             app.UseIdentity();
             app.UseIdentityServer();
 
-            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
-            app.UseGoogleAuthentication(new GoogleOptions
+            app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
             {
-                AuthenticationScheme = "Google",
-                SignInScheme = "Identity.External", // this is the name of the cookie middleware registered by UseIdentity()
-                ClientId = "998042782978-s07498t8i8jas7npj4crve1skpromf37.apps.googleusercontent.com",
-                ClientSecret = "HsnwJri_53zn7VcO1Fm7THBb",
+                AuthenticationScheme = "Microsoft",
+                DisplayName = "Microsoft",
+                SignInScheme = "Identity.External",
+                ClientId = _clientId,
+                ClientSecret = _clientSecret
             });
 
             app.UseMvc(routes =>
