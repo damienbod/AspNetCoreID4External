@@ -4,3 +4,5 @@ src/AngularClient/angularApp/**/*.js
 src/**/Debug
 src/**/obj
 .vs
+src/AngularClient/wwwroot/dist/app.bundle.js
+src/AngularClient/wwwroot/dist/app.bundle.js.map
