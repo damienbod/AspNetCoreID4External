@@ -7,14 +7,12 @@ import { Configuration } from './app.constants';
 import { routing } from './app.routes';
 import { HttpModule, JsonpModule } from '@angular/http';
 
-import { SecureFileService } from './securefile/SecureFileService';
 import { DataEventRecordsService } from './dataeventrecords/DataEventRecordsService';
 import { DataEventRecord } from './dataeventrecords/models/DataEventRecord';
 
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { HomeComponent } from './home/home.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
-import { SecureFilesComponent } from './securefile/securefiles.component';
 
 import { DataEventRecordsListComponent } from './dataeventrecords/dataeventrecords-list.component';
 import { DataEventRecordsCreateComponent } from './dataeventrecords/dataeventrecords-create.component';
@@ -38,14 +36,12 @@ import { OpenIDImplicitFlowConfiguration } from './auth/modules/auth.configurati
         ForbiddenComponent,
         HomeComponent,
         UnauthorizedComponent,
-        SecureFilesComponent,
         DataEventRecordsListComponent,
         DataEventRecordsCreateComponent,
         DataEventRecordsEditComponent
     ],
     providers: [
         OidcSecurityService,
-        SecureFileService,
         DataEventRecordsService,
         Configuration
     ],
@@ -63,7 +59,7 @@ export class AppModule {
         // The ID Token MUST be rejected if the ID Token does not list the Client as a valid audience, or if it contains additional audiences not trusted by the Client.
         openIDImplicitFlowConfiguration.client_id = 'angularclient';
         openIDImplicitFlowConfiguration.response_type = 'id_token token';
-        openIDImplicitFlowConfiguration.scope = 'dataEventRecords securedFiles openid';
+        openIDImplicitFlowConfiguration.scope = 'dataEventRecords openid';
         openIDImplicitFlowConfiguration.post_logout_redirect_uri = 'https://localhost:44334/unauthorized';
         openIDImplicitFlowConfiguration.start_checksession = true;
         openIDImplicitFlowConfiguration.silent_renew = true;
