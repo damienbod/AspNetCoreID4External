@@ -1,0 +1,6 @@
+src/AngularClient/node_modules
+src/AngularClient/angularApp/**/*.js.map
+src/AngularClient/angularApp/**/*.js
+src/**/Debug
+src/**/obj
+.vs
