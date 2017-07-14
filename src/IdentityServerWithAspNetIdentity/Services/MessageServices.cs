@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
+using Twilio.Types;
 
 namespace IdentityServerWithAspNetIdentity.Services
 {
@@ -25,6 +28,13 @@ namespace IdentityServerWithAspNetIdentity.Services
         {
             // Plug in your SMS service here to send a text message.
             _logger.LogInformation("SMS: {number}, Message: {message}", number, message);
+            var sid = "11111";
+            var token = "111111";
+            var from = "111111";
+            TwilioClient.Init(sid, token);
+            MessageResource.CreateAsync(new PhoneNumber(number),
+                from: new PhoneNumber(from),
+                body: message);
             return Task.FromResult(0);
         }
     }
