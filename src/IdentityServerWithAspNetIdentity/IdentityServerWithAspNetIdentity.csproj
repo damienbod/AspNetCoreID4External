@@ -34,6 +34,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="1.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Design" Version="1.1.2" />
 	<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="1.1.2" />
+	<PackageReference Include="Twilio" Version="5.5.2" />
   </ItemGroup>
 
   <ItemGroup>

@@ -44,9 +44,12 @@ namespace QuickstartIdentityServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-			_clientId = Configuration["clientId"];
-            _clientSecret = Configuration["clientSecret"];
-			
+			_clientId = Configuration["MicrosoftClientId"];
+            _clientSecret = Configuration["MircosoftClientSecret"];
+
+            var twilioSettings = Configuration.GetSection("TwilioSettings");
+            services.Configure<TwilioSettings>(twilioSettings);
+
             var cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "damienbodserver.pfx"), "");
 
             services.AddDbContext<ApplicationDbContext>(options =>

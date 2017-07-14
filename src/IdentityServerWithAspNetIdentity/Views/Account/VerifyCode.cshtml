@@ -9,6 +9,7 @@
     <div asp-validation-summary="All" class="text-danger"></div>
     <input asp-for="Provider" type="hidden" />
     <input asp-for="RememberMe" type="hidden" />
+    <input asp-for="ReturnUrl" type="hidden" value="@Model.ReturnUrl" />
     <h4>@ViewData["Status"]</h4>
     <hr />
     <div class="form-group">
