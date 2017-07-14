@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
@@ -12,10 +13,12 @@ namespace IdentityServerWithAspNetIdentity.Services
     public class AuthMessageSender : IEmailSender, ISmsSender
     {
         private readonly ILogger<AuthMessageSender> _logger;
+        private readonly IConfiguration _configuration;
 
-        public AuthMessageSender(ILogger<AuthMessageSender> logger)
+        public AuthMessageSender(ILogger<AuthMessageSender> logger, IConfiguration configuration)
         {
             _logger = logger;
+            _configuration = configuration;
         }
         public Task SendEmailAsync(string email, string subject, string message)
         {
@@ -28,9 +31,9 @@ namespace IdentityServerWithAspNetIdentity.Services
         {
             // Plug in your SMS service here to send a text message.
             _logger.LogInformation("SMS: {number}, Message: {message}", number, message);
-            var sid = "11111";
-            var token = "111111";
-            var from = "111111";
+            var sid = _configuration["TwilioSid"];
+            var token = _configuration["TwilioToken"];
+            var from = _configuration["TwilioFrom"];
             TwilioClient.Init(sid, token);
             MessageResource.CreateAsync(new PhoneNumber(number),
                 from: new PhoneNumber(from),
