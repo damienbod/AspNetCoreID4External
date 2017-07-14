@@ -46,7 +46,10 @@ namespace QuickstartIdentityServer
         {
 			_clientId = Configuration["MicrosoftClientId"];
             _clientSecret = Configuration["MircosoftClientSecret"];
-			
+
+            var twilioSettings = Configuration.GetSection("TwilioSettings");
+            services.Configure<TwilioSettings>(twilioSettings);
+
             var cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "damienbodserver.pfx"), "");
 
             services.AddDbContext<ApplicationDbContext>(options =>
