@@ -16,9 +16,9 @@
                     <li><a [routerLink]="['/dataeventrecords']">DataEventRecords</a></li>
                     <li><a [routerLink]="['/dataeventrecords/create']">Create DataEventRecord</a></li>
 
-                    <li><a class="navigationLinkButton" *ngIf="!securityService.isAuthorized" (click)="login()">Login</a></li>
-                    <li><a class="navigationLinkButton" *ngIf="securityService.isAuthorized" (click)="logout()">Logout</a></li>
-                    <li><a class="navigationLinkButton" *ngIf="securityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</a></li>
+                    <li><a class="navigationLinkButton" *ngIf="!isAuthorized" (click)="login()">Login</a></li>
+                    <li><a class="navigationLinkButton" *ngIf="isAuthorized" (click)="logout()">Logout</a></li>
+                    <li><a class="navigationLinkButton" *ngIf="oidcSecurityService.checkSessionChanged" (click)="refreshSession()">Refresh Session</a></li>
               
                 </ul>
             </div><!--/.nav-collapse -->
