@@ -1,6 +1,6 @@
 ﻿{
   "Production": {
-    "SqliteConnectionString": "Data Source=C:\\git\\AspNetCoreID4External\\src\\ResourceServer\\dataeventrecords.sqlite",
-    "KeyStoreFolderWhichIsBacked": "C:\\git\\damienbod\\AspNet5IdentityServerAngularImplicitFlow\\src\\ResourceServer\\Keys"
+    "SqliteConnectionString": "Data Source=C:\\git\\damienbod\\AspNetCoreID4External\\src\\ResourceServer\\dataeventrecords.sqlite",
+    "KeyStoreFolderWhichIsBacked": "C:\\git\\damienbod\\AspNetCoreID4External\\src\\ResourceServer\\Keys"
   }
 }
