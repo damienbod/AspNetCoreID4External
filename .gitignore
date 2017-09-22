@@ -6,3 +6,4 @@ src/**/obj
 .vs
 src/AngularClient/wwwroot/dist/app.bundle.js
 src/AngularClient/wwwroot/dist/app.bundle.js.map
+/src/AngularClient/wwwroot/dist

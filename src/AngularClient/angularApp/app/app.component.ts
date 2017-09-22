@@ -38,6 +38,10 @@ export class AppComponent implements OnInit, OnDestroy {
             (isAuthorized: boolean) => {
                 this.isAuthorized = isAuthorized;
             });
+
+        if (window.location.hash) {
+            this.oidcSecurityService.authorizedCallback();
+        }
     }
 
     ngOnDestroy(): void {
