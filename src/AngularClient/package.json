@@ -39,7 +39,7 @@
     "bootstrap": "3.3.7",
     "core-js": "2.5.1",
     "ie-shim": "0.1.0",
-    "jsrsasign": "7.2.1"
+    "jsrsasign": "8.0.3",
     "rxjs": "5.4.3",
     "zone.js": "0.8.16"
   },
