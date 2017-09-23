@@ -55,17 +55,17 @@ namespace QuickstartIdentityServer
             services.AddDbContext<ApplicationDbContext>(options =>
                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders()
+                .AddIdentityServer();
+
             services.AddAuthentication()
                  .AddMicrosoftAccount(options => {
                       options.ClientId = _clientId;
                       options.SignInScheme = "Identity.External";
                       options.ClientSecret = _clientSecret;
                   });
-
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders()
-                .AddIdentityServer();
 
             services.AddMvc();
 
