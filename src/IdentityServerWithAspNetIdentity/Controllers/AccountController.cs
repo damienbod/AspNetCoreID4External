@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using IdentityServerWithAspNetIdentity.Models.AccountViewModels;
+using IdentityServer4.Quickstart.UI.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
 using IdentityServer4.Models;
@@ -17,7 +18,6 @@ using IdentityModel;
 using IdentityServer4;
 using Microsoft.AspNetCore.Http.Authentication;
 using IdentityServer4.Extensions;
-using IdentityServer4.Quickstart.UI;
 
 namespace IdentityServerWithAspNetIdentity.Controllers
 {
@@ -264,7 +264,7 @@ namespace IdentityServerWithAspNetIdentity.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, IsAdmin = model.IsAdmin };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

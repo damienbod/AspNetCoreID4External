@@ -1,11 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using IdentityServer4.Services;
-using IdentityServer4.Quickstart.UI;
+using IdentityServer4.Quickstart.UI.Models;
 
 namespace IdentityServerWithAspNetIdentity.Controllers
 {
-    [SecurityHeaders]
     public class HomeController : Controller
     {
         private readonly IIdentityServerInteractionService _interaction;
@@ -34,6 +36,9 @@ namespace IdentityServerWithAspNetIdentity.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Shows the error page
+        /// </summary>
         public async Task<IActionResult> Error(string errorId)
         {
             var vm = new ErrorViewModel();
