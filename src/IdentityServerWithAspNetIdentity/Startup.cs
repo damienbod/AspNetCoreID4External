@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +10,7 @@ using IdentityServerWithAspNetIdentity.Services;
 using IdentityServer4.Services;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
 
 namespace QuickstartIdentityServer
 {
@@ -53,13 +53,25 @@ namespace QuickstartIdentityServer
             var cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "damienbodserver.pfx"), "");
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+                   options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddAuthentication();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders()
+            .AddIdentityServer();
 
             services.AddMvc();
+
+            //app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
+            //{
+            //    AuthenticationScheme = "Microsoft",
+            //    DisplayName = "Microsoft",
+            //    SignInScheme = "Identity.External",
+            //    ClientId = _clientId,
+            //    ClientSecret = _clientSecret
+            //});
 
             services.AddTransient<IProfileService, IdentityWithAdditionalClaimsProfileService>();
 
@@ -93,17 +105,8 @@ namespace QuickstartIdentityServer
 
             app.UseStaticFiles();
 
-            app.UseIdentity();
             app.UseIdentityServer();
-
-            app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
-            {
-                AuthenticationScheme = "Microsoft",
-                DisplayName = "Microsoft",
-                SignInScheme = "Identity.External",
-                ClientId = _clientId,
-                ClientSecret = _clientSecret
-            });
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {
