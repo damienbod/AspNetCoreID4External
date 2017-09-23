@@ -1,11 +1,6 @@
-﻿@model LoggedOutViewModel
+﻿@model IdentityServer4.Quickstart.UI.Models.LoggedOutViewModel
 
-@{ 
-    // set this so UI rendering sees an anonymous user
-    Context.User = new System.Security.Claims.ClaimsPrincipal(new System.Security.Claims.ClaimsIdentity());
-}
-
-<div class="page-header logged-out">
+<div class="page-header">
     <h1>
         Logout
         <small>You are now logged out</small>
@@ -14,21 +9,13 @@
     @if (Model.PostLogoutRedirectUri != null)
     {
         <div>
-            Click <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">here</a> to return to the
+            Click <a href="@Model.PostLogoutRedirectUri">here</a> to return to the
             <span>@Model.ClientName</span> application.
         </div>
     }
 
     @if (Model.SignOutIframeUrl != null)
     {
-        <iframe width="0" height="0" class="signout" src="@Model.SignOutIframeUrl"></iframe>
+        <iframe style="display:none" width="0" height="0" class="signout" src="@Model.SignOutIframeUrl"></iframe>
     }
 </div>
-
-@section scripts
-{
-    @if (Model.AutomaticRedirectAfterSignOut)
-    {
-        <script src="~/js/signout-redirect.js"></script>
-    }
-}

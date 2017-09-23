@@ -1,25 +1,18 @@
-﻿using System;
-using System.IO;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using QuickstartIdentityServer;
 
-namespace IdentityServerWithAspNetIdentity
+namespace QuickstartIdentityServer
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            Console.Title = "IdentityServer";
+            BuildWebHost(args).Run();
+        }
 
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseUrls("http://localhost:5000")
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .Build();
-
-            host.Run();
-        }
     }
 }

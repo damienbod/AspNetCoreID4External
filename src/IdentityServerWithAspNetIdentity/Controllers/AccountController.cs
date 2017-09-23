@@ -7,19 +7,21 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using IdentityServerWithAspNetIdentity.Models;
 using IdentityServerWithAspNetIdentity.Models.AccountViewModels;
-using IdentityServerWithAspNetIdentity.Services;
+using IdentityServer4.Quickstart.UI.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
+using IdentityServer4.Models;
+using IdentityServerWithAspNetIdentity.Models;
+using IdentityServerWithAspNetIdentity.Services;
+using IdentityModel;
+using IdentityServer4;
 using Microsoft.AspNetCore.Http.Authentication;
-using IdentityServer4.Quickstart.UI;
-using Microsoft.AspNetCore.Http;
+using IdentityServer4.Extensions;
 
 namespace IdentityServerWithAspNetIdentity.Controllers
 {
     [Authorize]
-    [SecurityHeaders]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -29,38 +31,44 @@ namespace IdentityServerWithAspNetIdentity.Controllers
         private readonly ILogger _logger;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
-        private readonly AccountService _account;
+        private readonly IPersistedGrantService _persistedGrantService;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
+            IPersistedGrantService persistedGrantService,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
             ILoggerFactory loggerFactory,
             IIdentityServerInteractionService interaction,
-            IHttpContextAccessor httpContext,
             IClientStore clientStore)
         {
             _userManager = userManager;
+            _persistedGrantService = persistedGrantService;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
             _interaction = interaction;
             _clientStore = clientStore;
-
-            _account = new AccountService(interaction, httpContext, clientStore);
         }
 
         //
         // GET: /Account/Login
-        [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> Login(string returnUrl)
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(string returnUrl = null)
         {
-            var vm = await _account.BuildLoginViewModelAsync(returnUrl);
+            var context = await _interaction.GetAuthorizationContextAsync(returnUrl);
+            if (context?.IdP != null)
+            {
+                // if IdP is passed, then bypass showing the login screen
+                return ExternalLogin(context.IdP, returnUrl);
+            }
 
-            if (vm.IsExternalLoginOnly)
+            var vm = await BuildLoginViewModelAsync(returnUrl, context);
+
+            if (vm.EnableLocalLogin == false && vm.ExternalProviders.Count() == 1)
             {
                 // only one option for logging in
                 return ExternalLogin(vm.ExternalProviders.First().AuthenticationScheme, returnUrl);
@@ -76,6 +84,9 @@ namespace IdentityServerWithAspNetIdentity.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginInputModel model)
         {
+            var returnUrl = model.ReturnUrl;
+
+            ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
@@ -84,11 +95,11 @@ namespace IdentityServerWithAspNetIdentity.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return RedirectToLocal(model.ReturnUrl);
+                    return RedirectToLocal(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = model.ReturnUrl, RememberMe = model.RememberLogin });
+                    return RedirectToAction(nameof(SendCode), new { ReturnUrl = returnUrl, RememberMe = model.RememberLogin });
                 }
                 if (result.IsLockedOut)
                 {
@@ -98,28 +109,84 @@ namespace IdentityServerWithAspNetIdentity.Controllers
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(await _account.BuildLoginViewModelAsync(model));
+                    return View(await BuildLoginViewModelAsync(model));
                 }
             }
 
             // If we got this far, something failed, redisplay form
-            return View(await _account.BuildLoginViewModelAsync(model));
+            return View(await BuildLoginViewModelAsync(model));
+        }
+
+        async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl, AuthorizationRequest context)
+        {
+            var loginProviders = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            var providers = loginProviders
+                .Where(x => x.DisplayName != null)
+                .Select(x => new ExternalProvider
+                {
+                    DisplayName = x.DisplayName,
+                    AuthenticationScheme = x.Name
+                });
+
+            var allowLocal = true;
+            if (context?.ClientId != null)
+            {
+                var client = await _clientStore.FindEnabledClientByIdAsync(context.ClientId);
+                if (client != null)
+                {
+                    allowLocal = client.EnableLocalLogin;
+
+                    if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Any())
+                    {
+                        providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme));
+                    }
+                }
+            }
+
+            return new LoginViewModel
+            {
+                EnableLocalLogin = allowLocal,
+                ReturnUrl = returnUrl,
+                Email = context?.LoginHint,
+                ExternalProviders = providers.ToArray()
+            };
+        }
+
+        async Task<LoginViewModel> BuildLoginViewModelAsync(LoginInputModel model)
+        {
+            var context = await _interaction.GetAuthorizationContextAsync(model.ReturnUrl);
+            var vm = await BuildLoginViewModelAsync(model.ReturnUrl, context);
+            vm.Email = model.Email;
+            vm.RememberLogin = model.RememberLogin;
+            return vm;
         }
 
         /// <summary>
         /// Show logout page
         /// </summary>
-        [AllowAnonymous]
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout(string logoutId)
         {
-            var vm = await _account.BuildLogoutViewModelAsync(logoutId);
-
-            if (vm.ShowLogoutPrompt == false)
+            if (User.Identity.IsAuthenticated == false)
             {
-                // no need to show prompt
-                return await Logout(vm);
+                // if the user is not authenticated, then just show logged out page
+                return await Logout(new LogoutViewModel { LogoutId = logoutId });
             }
+
+            var context = await _interaction.GetLogoutContextAsync(logoutId);
+            if (context?.ShowSignoutPrompt == false)
+            {
+                // it's safe to automatically sign-out
+                return await Logout(new LogoutViewModel { LogoutId = logoutId });
+            }
+
+            // show the logout prompt. this prevents attacks where the user
+            // is automatically signed out by another malicious web page.
+            var vm = new LogoutViewModel
+            {
+                LogoutId = logoutId
+            };
 
             return View(vm);
         }
@@ -132,20 +199,26 @@ namespace IdentityServerWithAspNetIdentity.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Logout(LogoutViewModel model)
         {
-            var vm = await _account.BuildLoggedOutViewModelAsync(model.LogoutId);
-            if (vm.TriggerExternalSignout)
+            var idp = User?.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
+            var subjectId = HttpContext.User.Identity.GetSubjectId();
+
+            if (idp != null && idp != IdentityServerConstants.LocalIdentityProvider)
             {
-                string url = Url.Action("Logout", new { logoutId = vm.LogoutId });
+                if (model.LogoutId == null)
+                {
+                    // if there's no current logout context, we need to create one
+                    // this captures necessary info from the current logged in user
+                    // before we signout and redirect away to the external IdP for signout
+                    model.LogoutId = await _interaction.CreateLogoutContextAsync();
+                }
+
+                string url = "/Account/Logout?logoutId=" + model.LogoutId;
                 try
                 {
-                    // hack: try/catch to handle social providers that throw
-                    await HttpContext.Authentication.SignOutAsync(vm.ExternalAuthenticationScheme,
-                        new AuthenticationProperties { RedirectUri = url });
+                    await _signInManager.SignOutAsync();
+                    // await HttpContext.Authentication.SignOutAsync(idp, new AuthenticationProperties { RedirectUri = url });
                 }
-                catch (NotSupportedException) // this is for the external providers that don't have signout
-                {
-                }
-                catch (InvalidOperationException) // this is for Windows/Negotiate
+                catch(NotSupportedException)
                 {
                 }
             }
@@ -153,7 +226,63 @@ namespace IdentityServerWithAspNetIdentity.Controllers
             // delete authentication cookie
             await _signInManager.SignOutAsync();
 
+            // set this so UI rendering sees an anonymous user
+            HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
+
+            // get context information (client name, post logout redirect URI and iframe for federated signout)
+            var logout = await _interaction.GetLogoutContextAsync(model.LogoutId);
+
+            var vm = new LoggedOutViewModel
+            {
+                PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
+                ClientName = logout?.ClientId,
+                SignOutIframeUrl = logout?.SignOutIFrameUrl
+            };
+
+            await _persistedGrantService.RemoveAllGrantsAsync(subjectId, "angular2client");
+
             return View("LoggedOut", vm);
+        }
+
+        //
+        // GET: /Account/Register
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register(string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
+        //
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, IsAdmin = model.IsAdmin };
+                var result = await _userManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
+                    // Send an email with this link
+                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
+                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    _logger.LogInformation(3, "User created a new account with password.");
+                    return RedirectToLocal(returnUrl);
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
         }
 
         //
@@ -211,47 +340,6 @@ namespace IdentityServerWithAspNetIdentity.Controllers
             }
         }
 
-        //
-        // GET: /Account/Register
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Register(string returnUrl = null)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
-        }
-
-        //
-        // POST: /Account/Register
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
-            {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=532713
-                    // Send an email with this link
-                    //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    //var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
-                    //await _emailSender.SendEmailAsync(model.Email, "Confirm your account",
-                    //    $"Please confirm your account by clicking this link: <a href='{callbackUrl}'>link</a>");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation(3, "User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
-                }
-                AddErrors(result);
-            }
-
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-        
         //
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
