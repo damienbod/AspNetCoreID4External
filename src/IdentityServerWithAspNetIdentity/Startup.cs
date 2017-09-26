@@ -56,9 +56,7 @@ namespace QuickstartIdentityServer
                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders()
-                .AddIdentityServer();
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddAuthentication()
                  .AddMicrosoftAccount(options => {
