@@ -8,7 +8,6 @@ import { routing } from './app.routes';
 import { HttpModule, JsonpModule } from '@angular/http';
 
 import { DataEventRecordsService } from './dataeventrecords/DataEventRecordsService';
-import { DataEventRecord } from './dataeventrecords/models/DataEventRecord';
 
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { HomeComponent } from './home/home.component';
@@ -19,8 +18,7 @@ import { DataEventRecordsCreateComponent } from './dataeventrecords/dataeventrec
 import { DataEventRecordsEditComponent } from './dataeventrecords/dataeventrecords-edit.component';
 
 import { AuthModule } from './auth/modules/auth.module';
-import { OidcSecurityService } from './auth/services/oidc.security.service';
-import { OpenIDImplicitFlowConfiguration } from './auth/modules/auth.configuration';
+import { OidcSecurityService, OpenIDImplicitFlowConfiguration } from 'angular-auth-oidc-client';
 
 @NgModule({
     imports: [
@@ -63,7 +61,7 @@ export class AppModule {
         openIDImplicitFlowConfiguration.post_logout_redirect_uri = 'https://localhost:44334/unauthorized';
         openIDImplicitFlowConfiguration.start_checksession = false;
         openIDImplicitFlowConfiguration.silent_renew = true;
-        openIDImplicitFlowConfiguration.startup_route = '/dataeventrecords';
+        openIDImplicitFlowConfiguration.post_login_route = '/dataeventrecords';
         // HTTP 403
         openIDImplicitFlowConfiguration.forbidden_route = '/forbidden';
         // HTTP 401
