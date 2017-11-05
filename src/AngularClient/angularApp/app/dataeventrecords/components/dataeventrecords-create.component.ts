@@ -3,10 +3,10 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 
-import { DataEventRecordsService } from '../dataeventrecords/DataEventRecordsService';
+import { DataEventRecordsService } from '../dataeventrecords.service';
 
 @Component({
-    selector: 'dataeventrecords-create',
+    selector: 'app-dataeventrecords-create',
     templateUrl: 'dataeventrecords-create.component.html'
 })
 
@@ -17,7 +17,10 @@ export class DataEventRecordsCreateComponent implements OnInit, OnDestroy {
     isAuthorizedSubscription: Subscription;
     isAuthorized: boolean;
 
-    constructor(private _dataEventRecordsService: DataEventRecordsService, public oidcSecurityService: OidcSecurityService, private _router: Router) {
+    constructor(private _dataEventRecordsService: DataEventRecordsService,
+        public oidcSecurityService: OidcSecurityService,
+        private _router: Router
+    ) {
         this.message = 'DataEventRecords Create';
     }
 

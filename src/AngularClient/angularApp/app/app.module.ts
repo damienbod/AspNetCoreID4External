@@ -5,42 +5,33 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { Configuration } from './app.constants';
 import { routing } from './app.routes';
-import { HttpModule, JsonpModule } from '@angular/http';
-
-import { DataEventRecordsService } from './dataeventrecords/DataEventRecordsService';
+import { HttpClientModule } from '@angular/common/http';
 
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { HomeComponent } from './home/home.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
-import { DataEventRecordsListComponent } from './dataeventrecords/dataeventrecords-list.component';
-import { DataEventRecordsCreateComponent } from './dataeventrecords/dataeventrecords-create.component';
-import { DataEventRecordsEditComponent } from './dataeventrecords/dataeventrecords-edit.component';
+import { DataEventRecordsModule } from './dataeventrecords/dataeventrecords.module';
 
-import { AuthModule } from './auth/modules/auth.module';
-import { OidcSecurityService, OpenIDImplicitFlowConfiguration } from 'angular-auth-oidc-client';
+import { AuthModule, OidcSecurityService, OpenIDImplicitFlowConfiguration } from 'angular-auth-oidc-client';
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         routing,
-        HttpModule,
-        JsonpModule,
+        HttpClientModule,
+        DataEventRecordsModule,
         AuthModule.forRoot(),
     ],
     declarations: [
         AppComponent,
         ForbiddenComponent,
         HomeComponent,
-        UnauthorizedComponent,
-        DataEventRecordsListComponent,
-        DataEventRecordsCreateComponent,
-        DataEventRecordsEditComponent
+        UnauthorizedComponent
     ],
     providers: [
         OidcSecurityService,
-        DataEventRecordsService,
         Configuration
     ],
     bootstrap:    [AppComponent],
