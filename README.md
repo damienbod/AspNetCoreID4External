@@ -12,6 +12,8 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
+<strong>2018-02-03</strong> Updating npm and nuget packages, Angular 5.2.3, angular-auth-oidc-client 4.0.1
+
 <strong>2017-11-05</strong> Updated to Angular 5 and Typescript 2.6.1
 
 <strong>2017-09-23</strong> Updated to ASP.NET Core 2.0
