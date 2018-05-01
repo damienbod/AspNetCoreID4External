@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace IdentityServerWithAspNetIdentity.Models.AccountViewModels
 {
-    public class ForgotPasswordViewModel
+    public class LoginWithRecoveryCodeViewModel
     {
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Recovery Code")]
+            public string RecoveryCode { get; set; }
     }
 }

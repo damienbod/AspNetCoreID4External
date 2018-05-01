@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace IdentityServerWithAspNetIdentity.Models.ManageViewModels
 {
-    public class RemoveLoginViewModel
+    public class TwoFactorAuthenticationViewModel
     {
-        public string LoginProvider { get; set; }
-        public string ProviderKey { get; set; }
+        public bool HasAuthenticator { get; set; }
+
+        public int RecoveryCodesLeft { get; set; }
+
+        public bool Is2faEnabled { get; set; }
     }
 }
