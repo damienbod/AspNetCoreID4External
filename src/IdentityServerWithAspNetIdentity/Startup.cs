@@ -48,9 +48,6 @@ namespace QuickstartIdentityServer
 			_clientId = Configuration["MicrosoftClientId"];
             _clientSecret = Configuration["MircosoftClientSecret"];
 
-            var twilioSettings = Configuration.GetSection("TwilioSettings");
-            services.Configure<TwilioSettings>(twilioSettings);
-
             var cert = new X509Certificate2(Path.Combine(_environment.ContentRootPath, "damienbodserver.pfx"), "");
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -70,19 +67,9 @@ namespace QuickstartIdentityServer
 
             services.AddMvc();
 
-            //app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
-            //{
-            //    AuthenticationScheme = "Microsoft",
-            //    DisplayName = "Microsoft",
-            //    SignInScheme = "Identity.External",
-            //    ClientId = _clientId,
-            //    ClientSecret = _clientSecret
-            //});
-
             services.AddTransient<IProfileService, IdentityWithAdditionalClaimsProfileService>();
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
 
             services.AddIdentityServer()
                 .AddSigningCredential(cert)
