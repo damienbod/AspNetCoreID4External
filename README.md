@@ -12,6 +12,8 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
+<strong>2018-05-01</strong> Updating Identity to use 2FA with TOTP, Angular 5.2.10, angular-auth-oidc-client 4.0.1
+
 <strong>2018-02-03</strong> Updating npm and nuget packages, Angular 5.2.3, angular-auth-oidc-client 4.0.1
 
 <strong>2017-11-05</strong> Updated to Angular 5 and Typescript 2.6.1
