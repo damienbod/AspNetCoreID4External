@@ -6,8 +6,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System;
+using AngularClient.ViewModel;
 
-namespace Angular2Client
+namespace AngularClient
 {
     public class Startup
     {
@@ -25,6 +26,7 @@ namespace Angular2Client
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<ClientAppSettings>(Configuration.GetSection("ClientAppSettings"));
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
@@ -56,7 +58,6 @@ namespace Angular2Client
                 "/dataeventrecords/create",
                 "/dataeventrecords/edit",
                 "/logoff",
-                "/securefiles",
             };
 
             app.Use(async (context, next) =>

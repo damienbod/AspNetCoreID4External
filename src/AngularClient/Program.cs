@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Angular2Client
+namespace AngularClient
 {
     public class Program
     {
