@@ -11,6 +11,7 @@ using IdentityServer4.Services;
 using System.Security.Cryptography.X509Certificates;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace QuickstartIdentityServer
 {
@@ -56,14 +57,16 @@ namespace QuickstartIdentityServer
                    options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services.AddAuthentication()
-                 .AddMicrosoftAccount(options => {
-                      options.ClientId = _clientId;
-                      options.SignInScheme = "Identity.External";
-                      options.ClientSecret = _clientSecret;
-                  });
+                 .AddMicrosoftAccount(options =>
+                 {
+                     options.ClientId = _clientId;
+                     options.SignInScheme = "Identity.External";
+                     options.ClientSecret = _clientSecret;
+                 });
 
             services.AddMvc();
 

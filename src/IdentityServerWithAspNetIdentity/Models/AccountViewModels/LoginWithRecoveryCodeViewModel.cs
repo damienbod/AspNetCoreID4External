@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace IdentityServerWithAspNetIdentity.Models.AccountViewModels
 {
-
-    public class LoggedOutViewModel
+    public class LoginWithRecoveryCodeViewModel
     {
-        public string PostLogoutRedirectUri { get; set; }
-        public string ClientName { get; set; }
-        public string SignOutIframeUrl { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Recovery Code")]
+            public string RecoveryCode { get; set; }
     }
 }
