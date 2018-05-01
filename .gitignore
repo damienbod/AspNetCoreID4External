@@ -7,3 +7,6 @@ src/**/obj
 src/AngularClient/wwwroot/dist/app.bundle.js
 src/AngularClient/wwwroot/dist/app.bundle.js.map
 /src/AngularClient/wwwroot/dist
+/2faTest/bin/
+/2faTest/obj/Debug
+/src/ResourceServer
