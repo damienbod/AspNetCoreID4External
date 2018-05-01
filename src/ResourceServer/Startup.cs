@@ -40,13 +40,6 @@ namespace AspNet5SQLite
           
             var cert = new X509Certificate2(Path.Combine(_env.ContentRootPath, "damienbodserver.pfx"), "");
 
-            // Important The folderForKeyStore needs to be backed up.
-            services.AddDataProtection()
-                .SetApplicationName("AspNet5IdentityServerAngularImplicitFlow")
-                .PersistKeysToFileSystem(new DirectoryInfo(folderForKeyStore))
-                .ProtectKeysWithCertificate(cert);
-
-
             services.AddDbContext<DataEventRecordContext>(options =>
                 options.UseSqlite(connection)
             );
