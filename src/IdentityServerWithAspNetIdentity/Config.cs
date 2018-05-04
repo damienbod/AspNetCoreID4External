@@ -65,6 +65,7 @@ namespace QuickstartIdentityServer
                     },
                     PostLogoutRedirectUris = new List<string>
                     {
+                        "https://localhost:44334",
                         "https://localhost:44334/unauthorized"
                     },
                     AllowedCorsOrigins = new List<string>
