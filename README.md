@@ -14,6 +14,8 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
+<strong>2018-05-04</strong> Updated to Angular 6
+
 <strong>2018-05-01</strong> Updated to bootstrap 4, switch to Authenticator
 
 <strong>2018-05-01</strong> Updated Identity to use 2FA with TOTP, Angular 5.2.10, angular-auth-oidc-client 4.1.0
