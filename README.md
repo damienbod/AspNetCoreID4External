@@ -14,6 +14,8 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
+<strong>2018-05-08</strong> Updated to .NET Core 2.1 rc1
+
 <strong>2018-05-04</strong> Updated to Angular 6
 
 <strong>2018-05-01</strong> Updated to bootstrap 4, switch to Authenticator
