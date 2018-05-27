@@ -15,6 +15,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Collections.Generic;
 using Newtonsoft.Json.Serialization;
 using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AspNet5SQLite
 {
@@ -84,7 +85,8 @@ namespace AspNet5SQLite
             services.AddMvc(options =>
             {
                options.Filters.Add(new AuthorizeFilter(guestPolicy));
-            }).AddJsonOptions(options =>
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+			.AddJsonOptions(options =>
             {
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
             });

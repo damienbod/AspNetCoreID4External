@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System;
 using AngularClient.ViewModel;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AngularClient
 {
@@ -27,7 +28,7 @@ namespace AngularClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ClientAppSettings>(Configuration.GetSection("ClientAppSettings"));
-            services.AddMvc();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
