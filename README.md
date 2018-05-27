@@ -7,7 +7,7 @@ https://damienbod.com/2017/07/11/adding-an-external-microsoft-login-to-identitys
 
 ## Implementing Two-factor authentication with IdentityServer4 and Twilio
 
-### This is not longer recommended, removed from code. See history
+### This is no longer recommended, removed from code. See history
 
 https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-identityserver4-and-twilio/
 
