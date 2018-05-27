@@ -65,7 +65,7 @@ namespace QuickstartIdentityServer
                      options.ClientSecret = _clientSecret;
                  });
 
-            services.AddMvc();
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddTransient<IProfileService, IdentityWithAdditionalClaimsProfileService>();
 
