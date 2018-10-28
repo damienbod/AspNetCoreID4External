@@ -14,6 +14,8 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
+<strong>2018-10-28</strong> Updated Angular 7.0.0, ASP.NET Core 2.1
+
 <strong>2018-05-27</strong> Updated packages
 
 <strong>2018-05-08</strong> Updated to .NET Core 2.1 rc1
