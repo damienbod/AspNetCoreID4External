@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { OidcSecurityService, AuthorizationResult } from 'angular-auth-oidc-client';
+import { OidcSecurityService, AuthorizationResult, AuthorizationState } from 'angular-auth-oidc-client';
 
 @Component({
     selector: 'app-component',
@@ -82,7 +82,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     private onAuthorizationResultComplete(authorizationResult: AuthorizationResult) {
         console.log('Auth result received:' + authorizationResult);
-        if (authorizationResult === AuthorizationResult.unauthorized) {
+        if (authorizationResult.authorizationState === AuthorizationState.unauthorized) {
             if (window.parent) {
                 // sent from the child iframe, for example the silent renew
                 window.parent.location.href = '/unauthorized';
