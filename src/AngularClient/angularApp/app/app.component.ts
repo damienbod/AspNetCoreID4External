@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 import { OidcSecurityService, AuthorizationResult, AuthorizationState } from 'angular-auth-oidc-client';
 
 @Component({
@@ -18,7 +19,8 @@ export class AppComponent implements OnInit, OnDestroy {
     checksession = false;
 
     constructor(
-        public oidcSecurityService: OidcSecurityService
+        public oidcSecurityService: OidcSecurityService,
+        private router: Router,
     ) {
         console.log('AppComponent STARTING');
 
@@ -53,9 +55,6 @@ export class AppComponent implements OnInit, OnDestroy {
         if (this.isAuthorizedSubscription) {
             this.isAuthorizedSubscription.unsubscribe();
         }
-        this.oidcSecurityService.onModuleSetup.unsubscribe();
-        this.oidcSecurityService.onCheckSessionChanged.unsubscribe();
-        this.oidcSecurityService.onAuthorizationResult.unsubscribe();
     }
 
     login() {
@@ -76,18 +75,27 @@ export class AppComponent implements OnInit, OnDestroy {
 
     private doCallbackLogicIfRequired() {
         if (window.location.hash) {
-            this.oidcSecurityService.authorizedCallback();
+            this.oidcSecurityService.authorizedImplicitFlowCallback();
         }
     }
 
     private onAuthorizationResultComplete(authorizationResult: AuthorizationResult) {
-        console.log('Auth result received:' + authorizationResult);
+
+        console.log('Auth result received AuthorizationState:'
+            + authorizationResult.authorizationState
+            + ' validationResult:' + authorizationResult.validationResult);
+
+        this.oidcSecurityService.getUserData().subscribe(
+            (data: any) => {
+                console.warn(data);
+            });
+
+
         if (authorizationResult.authorizationState === AuthorizationState.unauthorized) {
             if (window.parent) {
                 // sent from the child iframe, for example the silent renew
-                window.parent.location.href = '/unauthorized';
+                this.router.navigate(['/unauthorized']);
             } else {
-                // sent from the main window
                 window.location.href = '/unauthorized';
             }
         }
