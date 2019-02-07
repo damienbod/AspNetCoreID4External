@@ -85,7 +85,7 @@ namespace AspNet5SQLite
             services.AddMvc(options =>
             {
                options.Filters.Add(new AuthorizeFilter(guestPolicy));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
 			.AddJsonOptions(options =>
             {
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
