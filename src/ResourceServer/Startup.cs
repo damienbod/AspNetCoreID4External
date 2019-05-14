@@ -16,6 +16,9 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Serialization;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection;
+using System;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace AspNet5SQLite
 {
@@ -91,6 +94,19 @@ namespace AspNet5SQLite
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
             });
 
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Version = "v1",
+                    Title = "Docs API",
+                });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
             services.AddScoped<IDataEventRecordRepository, DataEventRecordRepository>();
         }
 
@@ -106,6 +122,12 @@ namespace AspNet5SQLite
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Docs API");
             });
         }
     }
