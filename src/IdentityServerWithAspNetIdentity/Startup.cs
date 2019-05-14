@@ -86,13 +86,13 @@ namespace StsServerIdentity
 
 
             services.AddAuthentication()
-                 .AddMicrosoftAccount(options =>
-                 {
-                     options.ClientId = _clientId;
-                     options.SignInScheme = "Identity.External";
-                     options.ClientSecret = _clientSecret;
-                 })
-                 .AddOpenIdConnect("Azure AD or Microsoft", "Login", options => // Microsoft common
+                 //.AddMicrosoftAccount(options =>
+                 //{
+                 //    options.ClientId = _clientId;
+                 //    options.SignInScheme = "Identity.External";
+                 //    options.ClientSecret = _clientSecret;
+                 //})
+                 .AddOpenIdConnect("Azure AD / Microsoft", "Azure AD / Microsoft", options => // Microsoft common
                  {
                      //  https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration
                      options.ClientId = _clientId;
@@ -109,8 +109,9 @@ namespace StsServerIdentity
                          NameClaimType = "email",
                      };
                      options.CallbackPath = "/signin-microsoft";
-                     options.Prompt = "login"; // login, consent
+                     options.Prompt = "consent"; // login, consent
                  });
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                  .AddEntityFrameworkStores<ApplicationDbContext>()
                  .AddErrorDescriber<StsIdentityErrorDescriber>()
