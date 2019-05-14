@@ -14,7 +14,7 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
-<strong>2019-05-14</strong> Updated Microsoft login to OIDC login, updated STS
+<strong>2019-05-14</strong> Updated Microsoft login to OIDC login, updated STS, updated Angular 7.2.15
 
 <strong>2019-03-31</strong> Updated Angular 7.2.11, NuGet packages
 
