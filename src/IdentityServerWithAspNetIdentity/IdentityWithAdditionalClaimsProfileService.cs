@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using Microsoft.AspNetCore.Identity;
+using IdentityServer4;
+using IdentityServer4.Services;
+using StsServerIdentity.Models;
 using System.Threading.Tasks;
+using IdentityServer4.Models;
+using System.Security.Claims;
 using IdentityModel;
 using IdentityServer4.Extensions;
-using IdentityServer4.Models;
-using IdentityServer4.Services;
-using IdentityServerWithAspNetIdentity.Models;
-using Microsoft.AspNetCore.Identity;
+using System.Linq;
 
-namespace QuickstartIdentityServer
+namespace StsServerIdentity
 {
-    using IdentityServer4;
 
     public class IdentityWithAdditionalClaimsProfileService : IProfileService
     {
