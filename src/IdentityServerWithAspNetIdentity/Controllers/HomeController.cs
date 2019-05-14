@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using IdentityServer4.Services;
-using IdentityServer4.Quickstart.UI.Models;
+using StsServerIdentity.Models;
 
-namespace IdentityServerWithAspNetIdentity.Controllers
+namespace StsServerIdentity.Controllers
 {
     public class HomeController : Controller
     {
@@ -22,12 +19,6 @@ namespace IdentityServerWithAspNetIdentity.Controllers
             return View();
         }
 
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
 
         /// <summary>
         /// Shows the error page
