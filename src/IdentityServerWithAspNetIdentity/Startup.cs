@@ -83,8 +83,6 @@ namespace StsServerIdentity
             services.AddSingleton<LocService>();
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
-
-
             services.AddAuthentication()
                  //.AddMicrosoftAccount(options =>
                  //{
