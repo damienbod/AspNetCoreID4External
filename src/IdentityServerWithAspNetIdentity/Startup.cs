@@ -109,7 +109,7 @@ namespace StsServerIdentity
                          NameClaimType = "email",
                      };
                      options.CallbackPath = "/signin-microsoft";
-                     options.Prompt = "consent"; // login, consent
+                     options.Prompt = "login"; // login, consent
                  });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
