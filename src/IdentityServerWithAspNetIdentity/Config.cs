@@ -56,7 +56,11 @@ namespace StsServerIdentity
                     AccessTokenType = AccessTokenType.Reference,
                     AccessTokenLifetime = 330,// 120 seconds, default 60 minutes
                     IdentityTokenLifetime = 300,
-                    AllowedGrantTypes = GrantTypes.Implicit,
+
+                    RequireClientSecret = false,
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris = new List<string>
                     {
