@@ -11,3 +11,4 @@ src/AngularClient/wwwroot/dist/app.bundle.js.map
 /2faTest/obj/Debug
 /src/ResourceServer
 /src/IdentityServerWithAspNetIdentity/node_modules/
+/src/AngularClient/AngularClient.csproj.user
