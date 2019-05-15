@@ -28,7 +28,9 @@ namespace AngularClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<ClientAppSettings>(Configuration.GetSection("ClientAppSettings"));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
@@ -42,11 +44,8 @@ namespace AngularClient
             });
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app)
         {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
             app.UseCors("AllowAllOrigins");
 
             var angularRoutes = new[] {
@@ -60,6 +59,7 @@ namespace AngularClient
                 "/dataeventrecords/create",
                 "/dataeventrecords/edit",
                 "/logoff",
+                "/securefiles",
             };
 
             app.Use(async (context, next) =>
@@ -85,7 +85,7 @@ namespace AngularClient
 
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("This is server routing, not angular routing");
+                await context.Response.WriteAsync("This is server routing, not angular2 routing");
             });
         }
     }
