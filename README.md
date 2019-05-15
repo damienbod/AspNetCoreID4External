@@ -14,15 +14,15 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
-<strong>2019-05-15</strong> Swtched to OIDC code form with PKCE, updated Angular 7.2.15
+<strong>2019-05-15</strong> Switched to OIDC code flow with PKCE, updated to Angular 7.2.15
 
 <strong>2019-05-14</strong> Updated Microsoft login to OIDC login, updated STS
 
-<strong>2019-03-31</strong> Updated Angular 7.2.11, NuGet packages
+<strong>2019-03-31</strong> Updated to Angular 7.2.11, NuGet packages
 
-<strong>2019-02-07</strong> Updated Angular 7.2.4, ASP.NET Core 2.2
+<strong>2019-02-07</strong> Updated to Angular 7.2.4, ASP.NET Core 2.2
 
-<strong>2018-10-28</strong> Updated Angular 7.0.0, ASP.NET Core 2.1
+<strong>2018-10-28</strong> Updated to Angular 7.0.0, ASP.NET Core 2.1
 
 <strong>2018-05-27</strong> Updated packages
 
