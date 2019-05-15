@@ -64,7 +64,8 @@ namespace StsServerIdentity
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris = new List<string>
                     {
-                        "https://localhost:44334"
+                        "https://localhost:44334",
+                        "https://localhost:44334/silent-renew.html",
 
                     },
                     PostLogoutRedirectUris = new List<string>
@@ -74,8 +75,7 @@ namespace StsServerIdentity
                     },
                     AllowedCorsOrigins = new List<string>
                     {
-                        "https://localhost:44334",
-                        "http://localhost:44334"
+                        "https://localhost:44334"
                     },
                     AllowedScopes = new List<string>
                     {

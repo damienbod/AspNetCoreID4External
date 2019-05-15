@@ -18,8 +18,30 @@ import {
     OidcConfigService
 } from 'angular-auth-oidc-client';
 import { DataEventRecordsModule } from './dataeventrecords/dataeventrecords.module';
+
+import { L10nConfig, L10nLoader, TranslationModule, StorageStrategy, ProviderType } from 'angular-l10n';
 import { AuthorizationGuard } from './authorization.guard';
 import { AuthorizationCanGuard } from './authorization.can.guard';
+
+const l10nConfig: L10nConfig = {
+    locale: {
+        languages: [
+            { code: 'en', dir: 'ltr' },
+            { code: 'it', dir: 'ltr' },
+            { code: 'fr', dir: 'ltr' },
+            { code: 'de', dir: 'ltr' }
+        ],
+        language: 'en',
+        storage: StorageStrategy.Cookie
+    },
+    translation: {
+        providers: [
+            { type: ProviderType.Static, prefix: './i18n/locale-' }
+        ],
+        caching: true,
+        missingValue: 'No key'
+    }
+};
 
 export function loadConfig(oidcConfigService: OidcConfigService) {
     console.log('APP_INITIALIZER STARTING');
@@ -32,6 +54,7 @@ export function loadConfig(oidcConfigService: OidcConfigService) {
         FormsModule,
         routing,
         HttpClientModule,
+        TranslationModule.forRoot(l10nConfig),
         DataEventRecordsModule,
         AuthModule.forRoot(),
     ],
@@ -50,7 +73,6 @@ export function loadConfig(oidcConfigService: OidcConfigService) {
             deps: [OidcConfigService],
             multi: true
         },
-        OidcSecurityService,
         AuthorizationGuard,
         AuthorizationCanGuard,
         Configuration
@@ -63,8 +85,10 @@ export class AppModule {
     constructor(
         private oidcSecurityService: OidcSecurityService,
         private oidcConfigService: OidcConfigService,
-        configuration: Configuration
+        configuration: Configuration,
+        public l10nLoader: L10nLoader
     ) {
+        this.l10nLoader.load();
 
         this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
 
@@ -95,6 +119,7 @@ export class AppModule {
             this.oidcSecurityService.setupModule(config, this.oidcConfigService.wellKnownEndpoints);
 
         });
+
         console.log('APP STARTING');
     }
 }
