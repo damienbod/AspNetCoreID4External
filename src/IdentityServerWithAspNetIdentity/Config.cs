@@ -4,7 +4,7 @@
 using IdentityServer4.Models;
 using System.Collections.Generic;
 
-namespace QuickstartIdentityServer
+namespace StsServerIdentity
 {
     public class Config
     {
@@ -56,11 +56,16 @@ namespace QuickstartIdentityServer
                     AccessTokenType = AccessTokenType.Reference,
                     AccessTokenLifetime = 330,// 120 seconds, default 60 minutes
                     IdentityTokenLifetime = 300,
-                    AllowedGrantTypes = GrantTypes.Implicit,
+
+                    RequireClientSecret = false,
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequirePkce = true,
+
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris = new List<string>
                     {
-                        "https://localhost:44334"
+                        "https://localhost:44334",
+                        "https://localhost:44334/silent-renew.html",
 
                     },
                     PostLogoutRedirectUris = new List<string>
@@ -70,8 +75,7 @@ namespace QuickstartIdentityServer
                     },
                     AllowedCorsOrigins = new List<string>
                     {
-                        "https://localhost:44334",
-                        "http://localhost:44334"
+                        "https://localhost:44334"
                     },
                     AllowedScopes = new List<string>
                     {

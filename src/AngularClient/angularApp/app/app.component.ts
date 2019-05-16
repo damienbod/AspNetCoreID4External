@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { OidcSecurityService, AuthorizationResult, AuthorizationState } from 'angular-auth-oidc-client';
+import { LocaleService, TranslationService, Language } from 'angular-l10n';
+import './app.component.css';
 
 @Component({
     selector: 'app-component',
@@ -9,6 +11,8 @@ import { OidcSecurityService, AuthorizationResult, AuthorizationState } from 'an
 })
 
 export class AppComponent implements OnInit, OnDestroy {
+
+    @Language() lang = '';
 
     title = '';
 
@@ -20,7 +24,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     constructor(
         public oidcSecurityService: OidcSecurityService,
+        public locale: LocaleService,
         private router: Router,
+        public translation: TranslationService
     ) {
         console.log('AppComponent STARTING');
 
@@ -51,6 +57,11 @@ export class AppComponent implements OnInit, OnDestroy {
             });
     }
 
+    changeCulture(language: string, country: string) {
+        this.locale.setDefaultLocale(language, country);
+        console.log('set language: ' + language);
+    }
+
     ngOnDestroy(): void {
         if (this.isAuthorizedSubscription) {
             this.isAuthorizedSubscription.unsubscribe();
@@ -59,6 +70,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
     login() {
         console.log('start login');
+
+        let culture = 'de-CH';
+        if (this.locale.getCurrentCountry()) {
+            culture = this.locale.getCurrentLanguage() + '-' + this.locale.getCurrentCountry();
+        }
+
+        this.oidcSecurityService.setCustomRequestParameters({ 'ui_locales': culture});
 
         this.oidcSecurityService.authorize();
     }
@@ -74,9 +92,9 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     private doCallbackLogicIfRequired() {
-        if (window.location.hash) {
-            this.oidcSecurityService.authorizedImplicitFlowCallback();
-        }
+        console.log(window.location);
+        // Will do a callback, if the url has a code and state parameter.
+        this.oidcSecurityService.authorizedCallbackWithCode(window.location.toString());
     }
 
     private onAuthorizationResultComplete(authorizationResult: AuthorizationResult) {
@@ -84,12 +102,6 @@ export class AppComponent implements OnInit, OnDestroy {
         console.log('Auth result received AuthorizationState:'
             + authorizationResult.authorizationState
             + ' validationResult:' + authorizationResult.validationResult);
-
-        this.oidcSecurityService.getUserData().subscribe(
-            (data: any) => {
-                console.warn(data);
-            });
-
 
         if (authorizationResult.authorizationState === AuthorizationState.unauthorized) {
             if (window.parent) {
