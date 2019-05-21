@@ -1,5 +1,7 @@
 
+## Updating Microsoft Account Logins in ASP.NET Core with OpenID Connect and Azure Active Directory
 
+https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-core-with-openid-connect-and-azure-active-directory/
 
 ## Adding an external Microsoft login to IdentityServer4
 
