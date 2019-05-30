@@ -16,6 +16,8 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
+<strong>2019-05-30</strong> Updated to Angular 8.0.0
+
 <strong>2019-05-15</strong> Switched to OIDC code flow with PKCE, updated to Angular 7.2.15
 
 <strong>2019-05-14</strong> Updated Microsoft login to OIDC login, updated STS
