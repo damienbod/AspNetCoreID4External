@@ -4,16 +4,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using System;
-using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.OpenApi.Models;
 
 namespace ResourceServer
@@ -34,8 +31,6 @@ namespace ResourceServer
         {
             var connection = Configuration.GetConnectionString("DefaultConnection");
             var folderForKeyStore = Configuration["Production:KeyStoreFolderWhichIsBacked"];
-          
-            var cert = new X509Certificate2(Path.Combine(_webHostEnvironment.ContentRootPath, "damienbodserver.pfx"), "");
 
             services.AddDbContext<DataEventRecordContext>(options =>
                 options.UseSqlite(connection)
