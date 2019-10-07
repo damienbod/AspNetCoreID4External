@@ -7,13 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection;
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
-using System.Collections.Generic;
-using Newtonsoft.Json.Serialization;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
@@ -39,7 +34,7 @@ namespace AspNet5SQLite
             var connection = Configuration["Production:SqliteConnectionString"];
             var folderForKeyStore = Configuration["Production:KeyStoreFolderWhichIsBacked"];
           
-            var cert = new X509Certificate2(Path.Combine(_env.ContentRootPath, "damienbodserver.pfx"), "");
+            var cert = new X509Certificate2(Path.Combine(_webHostEnvironment.ContentRootPath, "damienbodserver.pfx"), "");
 
             services.AddDbContext<DataEventRecordContext>(options =>
                 options.UseSqlite(connection)
@@ -102,7 +97,7 @@ namespace AspNet5SQLite
             services.AddScoped<IDataEventRecordRepository, DataEventRecordRepository>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseExceptionHandler("/Home/Error");
             app.UseCors("corsGlobalPolicy");
