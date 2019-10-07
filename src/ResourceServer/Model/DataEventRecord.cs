@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AspNet5SQLite.Model
+namespace ResourceServer.Model
 {
     // >dnx . ef migration add testMigration
 

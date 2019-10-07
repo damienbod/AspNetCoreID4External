@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using AspNet5SQLite.Model;
+using ResourceServer.Model;
 
 namespace ResourceServer.Migrations
 {
@@ -16,7 +16,7 @@ namespace ResourceServer.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20896");
 
-            modelBuilder.Entity("AspNet5SQLite.Model.DataEventRecord", b =>
+            modelBuilder.Entity("ResourceServer.Model.DataEventRecord", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
