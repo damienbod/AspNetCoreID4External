@@ -24,18 +24,15 @@ namespace AspNet5SQLite
 {
     public class Startup
     {
-        public IConfigurationRoot Configuration { get; set; }
-        
-        private IHostingEnvironment _env { get; set; }
-
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
-            _env = env;
-            var builder = new ConfigurationBuilder()
-                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("config.json");
-            Configuration = builder.Build();
+            Configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
         }
+
+        public IConfiguration Configuration { get; }
+
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -85,14 +82,9 @@ namespace AspNet5SQLite
                 });
             });
 
-            services.AddMvc(options =>
-            {
-               options.Filters.Add(new AuthorizeFilter(guestPolicy));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-			.AddJsonOptions(options =>
-            {
-                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-            });
+             services.AddControllers()
+                .AddNewtonsoftJson()
+               .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSwaggerGen(c =>
             {
@@ -116,12 +108,14 @@ namespace AspNet5SQLite
             app.UseCors("corsGlobalPolicy");
             app.UseStaticFiles();
 
+            app.UseRouting();
+			
             app.UseAuthentication();
-            app.UseMvc(routes =>
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
 
             app.UseSwagger();
