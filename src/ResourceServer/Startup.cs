@@ -1,64 +1,57 @@
-using AspNet5SQLite.Model;
-using AspNet5SQLite.Repositories;
+using ResourceServer.Model;
+using ResourceServer.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.IO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
-using System.Collections.Generic;
-using Newtonsoft.Json.Serialization;
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection;
 using System;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
-namespace AspNet5SQLite
+namespace ResourceServer
 {
     public class Startup
     {
-        public IConfigurationRoot Configuration { get; set; }
-        
-        private IHostingEnvironment _env { get; set; }
-
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
-            _env = env;
-            var builder = new ConfigurationBuilder()
-                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("config.json");
-            Configuration = builder.Build();
+            Configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
         }
+
+        public IConfiguration Configuration { get; }
+
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connection = Configuration["Production:SqliteConnectionString"];
+            var connection = Configuration.GetConnectionString("DefaultConnection");
             var folderForKeyStore = Configuration["Production:KeyStoreFolderWhichIsBacked"];
-          
-            var cert = new X509Certificate2(Path.Combine(_env.ContentRootPath, "damienbodserver.pfx"), "");
 
             services.AddDbContext<DataEventRecordContext>(options =>
                 options.UseSqlite(connection)
             );
 
-            //Add Cors support to the service
-            services.AddCors();
-
-            var policy = new Microsoft.AspNetCore.Cors.Infrastructure.CorsPolicy();
-
-            policy.Headers.Add("*");
-            policy.Methods.Add("*");
-            policy.Origins.Add("*");
-            policy.SupportsCredentials = true;
-
-            services.AddCors(x => x.AddPolicy("corsGlobalPolicy", policy));
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder =>
+                    {
+                        builder
+                            .AllowCredentials()
+                            .WithOrigins(
+                                "https://localhost:44337",
+                                "https://localhost:44390",
+                                "https://localhost:44334")
+                            .SetIsOriginAllowedToAllowWildcardSubdomains()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
+                    });
+            });
 
             var guestPolicy = new AuthorizationPolicyBuilder()
                 .RequireAuthenticatedUser()
@@ -85,18 +78,13 @@ namespace AspNet5SQLite
                 });
             });
 
-            services.AddMvc(options =>
-            {
-               options.Filters.Add(new AuthorizeFilter(guestPolicy));
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-			.AddJsonOptions(options =>
-            {
-                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-            });
+             services.AddControllers()
+               .AddNewtonsoftJson()
+               .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
                     Title = "Docs API",
@@ -110,18 +98,20 @@ namespace AspNet5SQLite
             services.AddScoped<IDataEventRecordRepository, DataEventRecordRepository>();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseExceptionHandler("/Home/Error");
-            app.UseCors("corsGlobalPolicy");
+            app.UseCors("AllowAllOrigins");
             app.UseStaticFiles();
 
+            app.UseRouting();
+			
             app.UseAuthentication();
-            app.UseMvc(routes =>
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
 
             app.UseSwagger();
