@@ -33,11 +33,9 @@ namespace AngularClient
                         builder
                             .AllowCredentials()
                             .WithOrigins(
-                                "https://localhost:44311",
-                                "https://localhost:44352",
-                                "https://localhost:44372",
-                                "https://localhost:44378",
-                                "https://localhost:44390")
+                                "https://localhost:44337",
+                                "https://localhost:44390",
+                                "https://localhost:44334")
                             .SetIsOriginAllowedToAllowWildcardSubdomains()
                             .AllowAnyHeader()
                             .AllowAnyMethod();

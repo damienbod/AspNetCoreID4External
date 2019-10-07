@@ -16,6 +16,8 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
+<strong>2019-10-07</strong> Updated to .NET Core 3.0, Angular 8.2.9
+
 <strong>2019-05-30</strong> Updated to Angular 8.0.0
 
 <strong>2019-05-15</strong> Switched to OIDC code flow with PKCE, updated to Angular 7.2.15
