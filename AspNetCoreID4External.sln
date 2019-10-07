@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularClient", "src\AngularClient\AngularClient.csproj", "{946AD0FF-3D77-4BF1-9CE3-554A180B321F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServerWithAspNetIdentity", "src\IdentityServerWithAspNetIdentity\IdentityServerWithAspNetIdentity.csproj", "{5B4826ED-AC4C-43A3-9033-8906CB7A82BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServerWithAspNetIdentity", "src\IdentityServerWithAspNetIdentity\StsServerIdentity.csproj", "{5B4826ED-AC4C-43A3-9033-8906CB7A82BF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ResourceServer", "src\ResourceServer\ResourceServer.csproj", "{B5A458F3-4A88-423A-AD5E-65B891BFC3A4}"
 EndProject

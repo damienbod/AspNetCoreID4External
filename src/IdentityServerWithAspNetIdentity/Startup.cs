@@ -29,7 +29,8 @@ namespace StsServerIdentity
     {
         private IConfiguration _configuration { get; }
         private IWebHostEnvironment _environment { get; }
-
+        private string _clientId = "xxxxxx";
+        private string _clientSecret = "xxxxx";
         public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
@@ -38,8 +39,8 @@ namespace StsServerIdentity
 
         public void ConfigureServices(IServiceCollection services)
         {
-			_clientId = Configuration["MicrosoftClientId"];
-            _clientSecret = Configuration["MircosoftClientSecret"];
+			_clientId = _configuration["MicrosoftClientId"];
+            _clientSecret = _configuration["MircosoftClientSecret"];
             services.Configure<StsConfig>(_configuration.GetSection("StsConfig"));
             services.Configure<EmailSettings>(_configuration.GetSection("EmailSettings"));
             services.AddTransient<IProfileService, IdentityWithAdditionalClaimsProfileService>();
@@ -98,12 +99,11 @@ namespace StsServerIdentity
                     };
                 });
 
-            var stsConfig = _configuration.GetSection("StsConfig");
             services.AddIdentityServer()
                 .AddSigningCredential(x509Certificate2)
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
-                .AddInMemoryClients(Config.GetClients(stsConfig))
+                .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<IdentityWithAdditionalClaimsProfileService>();
         }
