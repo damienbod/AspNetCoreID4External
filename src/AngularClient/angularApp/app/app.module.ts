@@ -11,12 +11,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { HomeComponent } from './home/home.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
-import {
-    AuthModule,
-    OidcSecurityService,
-    OpenIDImplicitFlowConfiguration,
-    OidcConfigService
-} from 'angular-auth-oidc-client';
+import { AuthModule, ConfigResult, OidcConfigService, OidcSecurityService, OpenIdConfiguration } from 'angular-auth-oidc-client';
+
 import { DataEventRecordsModule } from './dataeventrecords/dataeventrecords.module';
 
 import { L10nConfig, L10nLoader, TranslationModule, StorageStrategy, ProviderType } from 'angular-l10n';
@@ -66,12 +62,11 @@ export function loadConfig(oidcConfigService: OidcConfigService) {
     ],
     providers: [
         OidcConfigService,
-        OidcSecurityService,
         {
             provide: APP_INITIALIZER,
             useFactory: loadConfig,
             deps: [OidcConfigService],
-            multi: true
+            multi: true,
         },
         AuthorizationGuard,
         AuthorizationCanGuard,
@@ -90,35 +85,35 @@ export class AppModule {
     ) {
         this.l10nLoader.load();
 
-        this.oidcConfigService.onConfigurationLoaded.subscribe(() => {
+        this.oidcConfigService.onConfigurationLoaded.subscribe((configResult: ConfigResult) => {
 
-            const config = new OpenIDImplicitFlowConfiguration();
-            config.stsServer = this.oidcConfigService.clientConfiguration.stsServer;
-            config.redirect_url = this.oidcConfigService.clientConfiguration.redirect_url;
-            config.client_id = this.oidcConfigService.clientConfiguration.client_id;
-            config.response_type = this.oidcConfigService.clientConfiguration.response_type;
-            config.scope = this.oidcConfigService.clientConfiguration.scope;
-            config.post_logout_redirect_uri = this.oidcConfigService.clientConfiguration.post_logout_redirect_uri;
-            config.start_checksession = this.oidcConfigService.clientConfiguration.start_checksession;
-            config.silent_renew = this.oidcConfigService.clientConfiguration.silent_renew;
-            config.silent_renew_url = this.oidcConfigService.clientConfiguration.redirect_url + '/silent-renew.html';
-            config.post_login_route = this.oidcConfigService.clientConfiguration.startup_route;
-            config.forbidden_route = this.oidcConfigService.clientConfiguration.forbidden_route;
-            config.unauthorized_route = this.oidcConfigService.clientConfiguration.unauthorized_route;
-            config.log_console_warning_active = this.oidcConfigService.clientConfiguration.log_console_warning_active;
-            config.log_console_debug_active = this.oidcConfigService.clientConfiguration.log_console_debug_active;
-            config.max_id_token_iat_offset_allowed_in_seconds =
-                this.oidcConfigService.clientConfiguration.max_id_token_iat_offset_allowed_in_seconds;
-            config.history_cleanup_off = true;
-            // config.iss_validation_off = false;
-            // config.disable_iat_offset_validation = true;
+            const config: OpenIdConfiguration = {
+                stsServer: configResult.customConfig.stsServer,
+                redirect_url: configResult.customConfig.redirect_url,
+                client_id: configResult.customConfig.client_id,
+                response_type: configResult.customConfig.response_type,
+                scope: configResult.customConfig.scope,
+                post_logout_redirect_uri: configResult.customConfig.post_logout_redirect_uri,
+                start_checksession: configResult.customConfig.start_checksession,
+                silent_renew: configResult.customConfig.silent_renew,
+                silent_renew_url: configResult.customConfig.redirect_url + '/silent-renew.html',
+                post_login_route: configResult.customConfig.startup_route,
+                forbidden_route: configResult.customConfig.forbidden_route,
+                unauthorized_route: configResult.customConfig.unauthorized_route,
+                log_console_warning_active: configResult.customConfig.log_console_warning_active,
+                log_console_debug_active: configResult.customConfig.log_console_debug_active,
+                max_id_token_iat_offset_allowed_in_seconds: configResult.customConfig.max_id_token_iat_offset_allowed_in_seconds,
+                history_cleanup_off: true
+                // iss_validation_off: false
+                // disable_iat_offset_validation: true
+            };
 
-            configuration.FileServer = this.oidcConfigService.clientConfiguration.apiFileServer;
-            configuration.Server = this.oidcConfigService.clientConfiguration.apiServer;
+            configuration.FileServer = configResult.customConfig.apiFileServer;
+            configuration.Server = configResult.customConfig.apiServer;
 
-            this.oidcSecurityService.setupModule(config, this.oidcConfigService.wellKnownEndpoints);
-
+            this.oidcSecurityService.setupModule(config, configResult.authWellknownEndpoints);
         });
+
 
         console.log('APP STARTING');
     }
