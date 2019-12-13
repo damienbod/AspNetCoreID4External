@@ -16,7 +16,7 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
-<strong>2019-12-13</strong> Updated to .NET Core 3.1
+<strong>2019-12-13</strong> Updated to .NET Core 3.1, Angular 8.2.14
 
 <strong>2019-10-07</strong> Updated to .NET Core 3.0, Angular 8.2.9
 
