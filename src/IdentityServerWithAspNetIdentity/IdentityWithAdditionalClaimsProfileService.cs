@@ -1,23 +1,23 @@
-﻿using Microsoft.AspNetCore.Identity;
-using IdentityServer4;
-using IdentityServer4.Services;
-using StsServerIdentity.Models;
-using System.Threading.Tasks;
-using IdentityServer4.Models;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Extensions;
-using System.Linq;
+using IdentityServer4.Models;
+using IdentityServer4.Services;
+using StsServerIdentity.Models;
+using Microsoft.AspNetCore.Identity;
+using IdentityServer4;
 
 namespace StsServerIdentity
 {
-
     public class IdentityWithAdditionalClaimsProfileService : IProfileService
     {
         private readonly IUserClaimsPrincipalFactory<ApplicationUser> _claimsFactory;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public IdentityWithAdditionalClaimsProfileService(UserManager<ApplicationUser> userManager,  IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory)
+        public IdentityWithAdditionalClaimsProfileService(UserManager<ApplicationUser> userManager, IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory)
         {
             _userManager = userManager;
             _claimsFactory = claimsFactory;
