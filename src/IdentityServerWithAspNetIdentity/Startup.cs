@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +23,7 @@ using StsServerIdentity.Filters;
 using StsServerIdentity.Services.Certificate;
 using Serilog;
 using Microsoft.AspNetCore.Http;
+using Fido2NetLib;
 
 namespace StsServerIdentity
 {
@@ -66,7 +66,8 @@ namespace StsServerIdentity
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddErrorDescriber<StsIdentityErrorDescriber>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders()
+                .AddTokenProvider<Fifo2UserTwoFactorTokenProvider>("FIDO2");
 
             services.AddAuthentication()
                  //.AddMicrosoftAccount(options =>
@@ -99,7 +100,6 @@ namespace StsServerIdentity
                 {
                     options.Filters.Add(new SecurityHeadersAttribute());
                 })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization(options =>
                 {
@@ -108,7 +108,8 @@ namespace StsServerIdentity
                         var assemblyName = new AssemblyName(typeof(SharedResource).GetTypeInfo().Assembly.FullName);
                         return factory.Create("SharedResource", assemblyName.Name);
                     };
-                });
+                })
+                .AddNewtonsoftJson();
 
             services.AddIdentityServer()
                 .AddSigningCredential(x509Certificate2)
@@ -117,6 +118,19 @@ namespace StsServerIdentity
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<IdentityWithAdditionalClaimsProfileService>();
+
+            services.Configure<Fido2Configuration>(_configuration.GetSection("fido2"));
+            services.Configure<Fido2MdsConfiguration>(_configuration.GetSection("fido2mds"));
+            services.AddScoped<Fido2Storage>();
+            // Adds a default in-memory implementation of IDistributedCache.
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(2);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -182,6 +196,8 @@ namespace StsServerIdentity
 
             app.UseIdentityServer();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
@@ -250,7 +266,7 @@ namespace StsServerIdentity
 
                     var providerQuery = new LocalizationQueryProvider
                     {
-                        QureyParamterName = "ui_locales"
+                        QueryParameterName = "ui_locales"
                     };
 
                     options.RequestCultureProviders.Insert(0, providerQuery);
