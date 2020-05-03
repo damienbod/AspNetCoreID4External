@@ -42,6 +42,7 @@
         "jsrsasign-reduced": "8.0.15",
         "rxjs": "~6.5.5",
         "rxjs-compat": "^6.5.5",
+        "angular-l10n": "^8.1.2",
         "zone.js": "~0.10.3"
     },
     "devDependencies": {
