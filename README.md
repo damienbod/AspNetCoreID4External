@@ -16,6 +16,8 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
+<strong>2020-05-03</strong> Updated OIDC lib to version 11, nuget packages
+
 <strong>2020-03-03</strong> Added support for FIDO2, updated to Angular 9
 
 <strong>2020-01-04</strong> Updated nuget packages, same site fix

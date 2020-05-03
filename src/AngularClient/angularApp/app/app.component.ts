@@ -1,7 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
-import { OidcSecurityService, AuthorizationResult, AuthorizationState } from 'angular-auth-oidc-client';
+import {
+    OidcClientNotification,
+    OidcSecurityService,
+} from 'angular-auth-oidc-client';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { LocaleService, TranslationService, Language } from 'angular-l10n';
 import './app.component.css';
 
@@ -10,62 +12,36 @@ import './app.component.css';
     templateUrl: 'app.component.html',
 })
 
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
     @Language() lang = '';
 
     title = '';
-
-    isAuthorizedSubscription: Subscription | undefined;
-    isAuthorized = false;
-
-    onChecksessionChanged: Subscription | undefined;
-    checksession = false;
+    userDataChanged$: Observable<OidcClientNotification<any>>;
+    userData$: Observable<any>;
+    isAuthenticated$: Observable<boolean>;
+    checkSessionChanged$: Observable<boolean>;
+    checkSessionChanged: any;
 
     constructor(
         public oidcSecurityService: OidcSecurityService,
         public locale: LocaleService,
-        private router: Router,
         public translation: TranslationService
     ) {
         console.log('AppComponent STARTING');
-
-        if (this.oidcSecurityService.moduleSetup) {
-            this.doCallbackLogicIfRequired();
-        } else {
-            this.oidcSecurityService.onModuleSetup.subscribe(() => {
-                this.doCallbackLogicIfRequired();
-            });
-        }
-
-        this.oidcSecurityService.onCheckSessionChanged.subscribe(
-            (checksession: boolean) => {
-                console.log('...recieved a check session event');
-                this.checksession = checksession;
-            });
-
-        this.oidcSecurityService.onAuthorizationResult.subscribe(
-            (authorizationResult: AuthorizationResult) => {
-                this.onAuthorizationResultComplete(authorizationResult);
-            });
     }
 
     ngOnInit() {
-        this.isAuthorizedSubscription = this.oidcSecurityService.getIsAuthorized().subscribe(
-            (isAuthorized: boolean) => {
-                this.isAuthorized = isAuthorized;
-            });
+        this.userData$ = this.oidcSecurityService.userData$;
+        this.isAuthenticated$ = this.oidcSecurityService.isAuthenticated$;
+        this.checkSessionChanged$ = this.oidcSecurityService.checkSessionChanged$;
+
+        this.oidcSecurityService.checkAuth().subscribe((isAuthenticated) => console.log('app authenticated', isAuthenticated));
     }
 
     changeCulture(language: string, country: string) {
         this.locale.setDefaultLocale(language, country);
         console.log('set language: ' + language);
-    }
-
-    ngOnDestroy(): void {
-        if (this.isAuthorizedSubscription) {
-            this.isAuthorizedSubscription.unsubscribe();
-        }
     }
 
     login() {
@@ -75,10 +51,9 @@ export class AppComponent implements OnInit, OnDestroy {
         if (this.locale.getCurrentCountry()) {
             culture = this.locale.getCurrentLanguage() + '-' + this.locale.getCurrentCountry();
         }
+        console.log(culture);
 
-        this.oidcSecurityService.setCustomRequestParameters({ 'ui_locales': culture});
-
-        this.oidcSecurityService.authorize();
+        this.oidcSecurityService.authorize({ customParams: { 'ui_locales': culture } });
     }
 
     refreshSession() {
@@ -91,25 +66,4 @@ export class AppComponent implements OnInit, OnDestroy {
         this.oidcSecurityService.logoff();
     }
 
-    private doCallbackLogicIfRequired() {
-        console.log(window.location);
-        // Will do a callback, if the url has a code and state parameter.
-        this.oidcSecurityService.authorizedCallbackWithCode(window.location.toString());
-    }
-
-    private onAuthorizationResultComplete(authorizationResult: AuthorizationResult) {
-
-        console.log('Auth result received AuthorizationState:'
-            + authorizationResult.authorizationState
-            + ' validationResult:' + authorizationResult.validationResult);
-
-        if (authorizationResult.authorizationState === AuthorizationState.unauthorized) {
-            if (window.parent) {
-                // sent from the child iframe, for example the silent renew
-                this.router.navigate(['/unauthorized']);
-            } else {
-                window.location.href = '/unauthorized';
-            }
-        }
-    }
 }
