@@ -24,6 +24,7 @@ using StsServerIdentity.Services.Certificate;
 using Serilog;
 using Microsoft.AspNetCore.Http;
 using Fido2NetLib;
+using System.Security.Cryptography;
 
 namespace StsServerIdentity
 {
@@ -111,8 +112,15 @@ namespace StsServerIdentity
                 })
                 .AddNewtonsoftJson();
 
+            //RsaSecurityKey rsaSecurityKey =
+            //    new RsaSecurityKey(x509Certificate2Certs.ActiveCertificate.GetRSAPrivateKey());
+
+            ECDsaSecurityKey eCDsaSecurityKey
+                = new ECDsaSecurityKey(x509Certificate2.GetECDsaPrivateKey());
+
             services.AddIdentityServer()
-                .AddSigningCredential(x509Certificate2)
+                //.AddSigningCredential(x509Certificate2)
+                .AddSigningCredential(eCDsaSecurityKey, "ES384") // ecdsaCertificate
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
