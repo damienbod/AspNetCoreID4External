@@ -19,9 +19,7 @@ export class AppComponent implements OnInit {
     title = '';
     userDataChanged$: Observable<OidcClientNotification<any>>;
     userData$: Observable<any>;
-    isAuthenticated$: Observable<boolean>;
-    checkSessionChanged$: Observable<boolean>;
-    checkSessionChanged: any;
+    isAuthenticated = false;
 
     constructor(
         public oidcSecurityService: OidcSecurityService,
@@ -33,10 +31,11 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         this.userData$ = this.oidcSecurityService.userData$;
-        this.isAuthenticated$ = this.oidcSecurityService.isAuthenticated$;
-        this.checkSessionChanged$ = this.oidcSecurityService.checkSessionChanged$;
 
-        this.oidcSecurityService.checkAuth().subscribe((isAuthenticated) => console.log('app authenticated', isAuthenticated));
+        this.oidcSecurityService.checkAuth().subscribe((isAuthenticated) => {
+            this.isAuthenticated = isAuthenticated;
+            console.log('app authenticated', isAuthenticated);
+        });
     }
 
     changeCulture(language: string, country: string) {
@@ -61,9 +60,16 @@ export class AppComponent implements OnInit {
         this.oidcSecurityService.authorize();
     }
 
-    logout() {
-        console.log('start logoff');
-        this.oidcSecurityService.logoff();
+    logoffAndRevokeTokens() {
+        this.oidcSecurityService.logoffAndRevokeTokens().subscribe((result) => console.log(result));
+    }
+
+    revokeRefreshToken() {
+        this.oidcSecurityService.revokeRefreshToken().subscribe((result) => console.log(result));
+    }
+
+    revokeAccessToken() {
+        this.oidcSecurityService.revokeAccessToken().subscribe((result) => console.log(result));
     }
 
 }

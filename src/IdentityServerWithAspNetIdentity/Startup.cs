@@ -24,6 +24,7 @@ using StsServerIdentity.Services.Certificate;
 using Serilog;
 using Microsoft.AspNetCore.Http;
 using Fido2NetLib;
+using System.Security.Cryptography;
 
 namespace StsServerIdentity
 {
@@ -111,8 +112,15 @@ namespace StsServerIdentity
                 })
                 .AddNewtonsoftJson();
 
+            //RsaSecurityKey rsaSecurityKey =
+            //    new RsaSecurityKey(x509Certificate2Certs.ActiveCertificate.GetRSAPrivateKey());
+
+            ECDsaSecurityKey eCDsaSecurityKey
+                = new ECDsaSecurityKey(x509Certificate2.GetECDsaPrivateKey());
+
             services.AddIdentityServer()
-                .AddSigningCredential(x509Certificate2)
+                //.AddSigningCredential(x509Certificate2)
+                .AddSigningCredential(eCDsaSecurityKey, "ES384") // ecdsaCertificate
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
                 .AddInMemoryClients(Config.GetClients())
@@ -120,7 +128,6 @@ namespace StsServerIdentity
                 .AddProfileService<IdentityWithAdditionalClaimsProfileService>();
 
             services.Configure<Fido2Configuration>(_configuration.GetSection("fido2"));
-            services.Configure<Fido2MdsConfiguration>(_configuration.GetSection("fido2mds"));
             services.AddScoped<Fido2Storage>();
             // Adds a default in-memory implementation of IDistributedCache.
             services.AddDistributedMemoryCache();
@@ -235,7 +242,7 @@ namespace StsServerIdentity
             }
             else
             {
-                cert = new X509Certificate2(Path.Combine(environment.ContentRootPath, "sts_dev_cert.pfx"), "1234");
+                cert = new X509Certificate2(Path.Combine(environment.ContentRootPath, "cert_ecdsa384.pfx"), "1234");
             }
 
             return cert;

@@ -9,7 +9,7 @@ import { DataEventRecordsModule } from './dataeventrecords/dataeventrecords.modu
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { HomeComponent } from './home/home.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
-import { AuthModule, OidcConfigService } from 'angular-auth-oidc-client';
+import { AuthModule, OidcConfigService, LogLevel } from 'angular-auth-oidc-client';
 import { map, switchMap } from 'rxjs/operators';
 import { L10nConfig, L10nLoader, TranslationModule, StorageStrategy, ProviderType } from 'angular-l10n';
 
@@ -24,16 +24,14 @@ export function configureAuth(oidcConfigService: OidcConfigService, httpClient: 
                 responseType: customConfig.response_type,
                 scope: customConfig.scope,
                 postLogoutRedirectUri: customConfig.post_logout_redirect_uri,
-                startCheckSession: customConfig.start_checksession,
                 silentRenew:  true,
-                silentRenewUrl: customConfig.redirect_url + '/silent-renew.html',
                 postLoginRoute: customConfig.startup_route,
                 forbiddenRoute: customConfig.forbidden_route,
                 unauthorizedRoute: customConfig.unauthorized_route,
-                logLevel: 0, // LogLevel.Debug, // customConfig.logLevel
                 maxIdTokenIatOffsetAllowedInSeconds: customConfig.max_id_token_iat_offset_allowed_in_seconds,
                 historyCleanupOff: true,
-                // autoUserinfo: false,
+                useRefreshToken: true,
+                logLevel: LogLevel.Debug,
             };
         }),
         switchMap((config) => oidcConfigService.withConfig(config))

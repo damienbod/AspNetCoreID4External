@@ -61,11 +61,13 @@ namespace StsServerIdentity
                     AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
 
+                    AllowOfflineAccess = true,
+                    RefreshTokenUsage = TokenUsage.OneTimeOnly,
+
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris = new List<string>
                     {
-                        "https://localhost:44334",
-                        "https://localhost:44334/silent-renew.html",
+                        "https://localhost:44334"
 
                     },
                     PostLogoutRedirectUris = new List<string>
