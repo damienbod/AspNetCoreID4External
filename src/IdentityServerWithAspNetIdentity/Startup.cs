@@ -235,7 +235,7 @@ namespace StsServerIdentity
             }
             else
             {
-                cert = new X509Certificate2(Path.Combine(environment.ContentRootPath, "sts_dev_cert.pfx"), "1234");
+                cert = new X509Certificate2(Path.Combine(environment.ContentRootPath, "cert_ecdsa384.pfx"), "1234");
             }
 
             return cert;
