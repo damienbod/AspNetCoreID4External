@@ -24,7 +24,6 @@ export function configureAuth(oidcConfigService: OidcConfigService, httpClient: 
                 responseType: customConfig.response_type,
                 scope: customConfig.scope,
                 postLogoutRedirectUri: customConfig.post_logout_redirect_uri,
-                startCheckSession: customConfig.start_checksession,
                 silentRenew:  true,
                 postLoginRoute: customConfig.startup_route,
                 forbiddenRoute: customConfig.forbidden_route,
