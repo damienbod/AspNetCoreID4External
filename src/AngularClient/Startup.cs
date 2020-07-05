@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System.IO;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System;
@@ -42,7 +39,7 @@ namespace AngularClient
                     });
             });
 
-            services.AddControllersWithViews().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddControllersWithViews();
         }
 
         public void Configure(IApplicationBuilder app)
