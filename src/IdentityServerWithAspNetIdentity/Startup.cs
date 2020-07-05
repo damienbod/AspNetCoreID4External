@@ -25,6 +25,7 @@ using Serilog;
 using Microsoft.AspNetCore.Http;
 using Fido2NetLib;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace StsServerIdentity
 {
@@ -58,7 +59,8 @@ namespace StsServerIdentity
                     CheckSameSite(cookieContext.Context, cookieContext.CookieOptions);
             });
 
-            var x509Certificate2 = GetCertificate(_environment, _configuration);
+            var x509Certificate2Certs = GetCertificates(_environment, _configuration)
+               .GetAwaiter().GetResult();
             AddLocalizationConfigurations(services);
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -116,13 +118,14 @@ namespace StsServerIdentity
             //    new RsaSecurityKey(x509Certificate2Certs.ActiveCertificate.GetRSAPrivateKey());
 
             ECDsaSecurityKey eCDsaSecurityKey
-                = new ECDsaSecurityKey(x509Certificate2.GetECDsaPrivateKey());
+                = new ECDsaSecurityKey(x509Certificate2Certs.ActiveCertificate.GetECDsaPrivateKey());
 
             services.AddIdentityServer()
                 //.AddSigningCredential(x509Certificate2)
                 .AddSigningCredential(eCDsaSecurityKey, "ES384") // ecdsaCertificate
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
+				.AddInMemoryApiScopes(Config.GetApiScopes())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<IdentityWithAdditionalClaimsProfileService>();
@@ -214,38 +217,28 @@ namespace StsServerIdentity
             });
         }
 
-        private static X509Certificate2 GetCertificate(IWebHostEnvironment environment, IConfiguration configuration)
+
+        private static async Task<(X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate)> GetCertificates(IWebHostEnvironment environment, IConfiguration configuration)
         {
-            X509Certificate2 cert;
-            var useLocalCertStore = Convert.ToBoolean(configuration["UseLocalCertStore"]);
-            var certificateThumbprint = configuration["CertificateThumbprint"];
-
-            if (environment.IsProduction())
+            var certificateConfiguration = new CertificateConfiguration
             {
-                if (useLocalCertStore)
-                {
-                    using (X509Store store = new X509Store(StoreName.My, StoreLocation.LocalMachine))
-                    {
-                        store.Open(OpenFlags.ReadOnly);
-                        var certs = store.Certificates.Find(X509FindType.FindByThumbprint, certificateThumbprint, false);
-                        cert = certs[0];
-                        store.Close();
-                    }
-                }
-                else
-                {
-                    // Azure deployment, will be used if deployed to Azure
-                    var vaultConfigSection = configuration.GetSection("Vault");
-                    var keyVaultService = new KeyVaultCertificateService(vaultConfigSection["Url"], vaultConfigSection["ClientId"], vaultConfigSection["ClientSecret"]);
-                    cert = keyVaultService.GetCertificateFromKeyVault(vaultConfigSection["CertificateName"]);
-                }
-            }
-            else
-            {
-                cert = new X509Certificate2(Path.Combine(environment.ContentRootPath, "cert_ecdsa384.pfx"), "1234");
-            }
+                // Use an Azure key vault
+                CertificateNameKeyVault = configuration["CertificateNameKeyVault"], //"StsCert",
+                KeyVaultEndpoint = configuration["AzureKeyVaultEndpoint"], // "https://damienbod.vault.azure.net"
 
-            return cert;
+                // Use a local store with thumbprint
+                //UseLocalCertStore = Convert.ToBoolean(configuration["UseLocalCertStore"]),
+                //CertificateThumbprint = configuration["CertificateThumbprint"],
+
+                // development certificate
+                DevelopmentCertificatePfx = Path.Combine(environment.ContentRootPath, "cert_ecdsa384.pfx"),
+                DevelopmentCertificatePassword = "1234" //configuration["DevelopmentCertificatePassword"] //"1234",
+            };
+
+            (X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate) certs = await CertificateService.GetCertificates(
+                certificateConfiguration).ConfigureAwait(false);
+
+            return certs;
         }
 
         private static void AddLocalizationConfigurations(IServiceCollection services)
@@ -260,13 +253,15 @@ namespace StsServerIdentity
                         {
                             new CultureInfo("en-US"),
                             new CultureInfo("de-CH"),
-                            new CultureInfo("it-CH"),
+                            new CultureInfo("it-IT"),
                             new CultureInfo("gsw-CH"),
-                            new CultureInfo("fr-CH"),
-                            new CultureInfo("zh-Hans")
+                            new CultureInfo("fr-FR"),
+                            new CultureInfo("zh-Hans"),
+                            new CultureInfo("ga-IE"),
+                            new CultureInfo("es-MX")
                         };
 
-                    options.DefaultRequestCulture = new RequestCulture(culture: "de-CH", uiCulture: "de-CH");
+                    options.DefaultRequestCulture = new RequestCulture(culture: "de-DE", uiCulture: "de-DE");
                     options.SupportedCultures = supportedCultures;
                     options.SupportedUICultures = supportedCultures;
 
@@ -315,9 +310,9 @@ namespace StsServerIdentity
                 return true;
             }
 
-            // Cover Chrome 50-69, because some versions are broken by SameSite=None, 
+            // Cover Chrome 50-69, because some versions are broken by SameSite=None,
             // and none in this range require it.
-            // Note: this covers some pre-Chromium Edge versions, 
+            // Note: this covers some pre-Chromium Edge versions,
             // but pre-Chromium Edge does not require SameSite=None.
             if (userAgent.Contains("Chrome/5") || userAgent.Contains("Chrome/6"))
             {

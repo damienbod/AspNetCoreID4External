@@ -16,6 +16,8 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### history 
 
+<strong>2020-07-05</strong> Updated all npm, nuget packages
+
 <strong>2020-05-06</strong> Updated FIDO2, switched to refresh tokens, using EC certificate
 
 <strong>2020-05-03</strong> Updated OIDC lib to version 11, nuget packages

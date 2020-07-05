@@ -51,7 +51,7 @@ namespace StsServerIdentity
                 ServerDomain = _optionsFido2Configuration.Value.ServerDomain,
                 ServerName = _optionsFido2Configuration.Value.ServerName,
                 Origin = _optionsFido2Configuration.Value.Origin,
-                TimestampDriftTolerance = _optionsFido2Configuration.Value.TimestampDriftTolerance
+                TimestampDriftTolerance = _optionsFido2Configuration.Value.TimestampDriftTolerance,
             });
         }
 

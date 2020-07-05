@@ -62,7 +62,7 @@ namespace ResourceServer
               .AddIdentityServerAuthentication(options =>
               {
                   options.Authority = "https://localhost:44337/";
-                  options.ApiName = "dataEventRecords";
+                  options.ApiName = "dataEventRecordsApi";
                   options.ApiSecret = "dataEventRecordsSecret";
               });
 
@@ -79,8 +79,7 @@ namespace ResourceServer
             });
 
              services.AddControllers()
-               .AddNewtonsoftJson()
-               .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+               .AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
             {
