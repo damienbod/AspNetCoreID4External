@@ -252,7 +252,6 @@ namespace StsServerIdentity
                     var supportedCultures = new List<CultureInfo>
                         {
                             new CultureInfo("en-US"),
-                            new CultureInfo("de-DE"),
                             new CultureInfo("de-CH"),
                             new CultureInfo("it-IT"),
                             new CultureInfo("gsw-CH"),
