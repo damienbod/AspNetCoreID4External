@@ -79,8 +79,7 @@ namespace ResourceServer
             });
 
              services.AddControllers()
-               .AddNewtonsoftJson()
-               .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+               .AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
             {
