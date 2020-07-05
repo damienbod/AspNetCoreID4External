@@ -22,8 +22,7 @@ namespace StsServerIdentity
         {
             return new List<ApiScope>
             {
-                new ApiScope("dataeventrecordsscope", "Scope for the dataEventRecords ApiResource"),
-                new ApiScope("securedfilesscope",  "Scope for the securedFiles ApiResource")
+                new ApiScope("dataEventRecords", "Scope for the dataEventRecords")
             };
         }
 
@@ -31,21 +30,13 @@ namespace StsServerIdentity
         {
             return new List<ApiResource>
             {
-                new ApiResource("dataEventRecords")
+                new ApiResource("dataEventRecordsApi")
                 {
                     ApiSecrets =
                     {
                         new Secret("dataEventRecordsSecret".Sha256())
                     },
                     UserClaims = { "role", "admin", "user", "dataEventRecords", "dataEventRecords.admin", "dataEventRecords.user" }
-                },
-                new ApiResource("securedFiles")
-                {
-                    ApiSecrets =
-                    {
-                        new Secret("securedFilesSecret".Sha256())
-                    },
-                    UserClaims = { "role", "admin", "user", "securedFiles", "securedFiles.admin", "securedFiles.user" }
                 }
             };
         }
@@ -90,9 +81,6 @@ namespace StsServerIdentity
                     {
                         "openid",
                         "dataEventRecords",
-                        "dataeventrecordsscope",
-                        "securedFiles",
-                        "securedfilesscope",
                         "role",
                         "profile",
                         "email"
