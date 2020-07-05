@@ -14,9 +14,16 @@ namespace StsServerIdentity
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
-                new IdentityResources.Email(), 
-                new IdentityResource("dataeventrecordsscope",new []{ "role", "admin", "user", "dataEventRecords", "dataEventRecords.admin" , "dataEventRecords.user" } ),
-                new IdentityResource("securedfilesscope",new []{ "role", "admin", "user", "securedFiles", "securedFiles.admin", "securedFiles.user"} )
+                new IdentityResources.Email()
+            };
+        }
+		
+		 public static IEnumerable<ApiScope> GetApiScopes()
+        {
+            return new List<ApiScope>
+            {
+                new ApiScope("dataeventrecordsscope", "Scope for the dataEventRecords ApiResource"),
+                new ApiScope("securedfilesscope",  "Scope for the securedFiles ApiResource")
             };
         }
 

@@ -123,6 +123,7 @@ namespace StsServerIdentity
                 .AddSigningCredential(eCDsaSecurityKey, "ES384") // ecdsaCertificate
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
+				.AddInMemoryApiScopes(Config.GetApiScopes())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<IdentityWithAdditionalClaimsProfileService>();
