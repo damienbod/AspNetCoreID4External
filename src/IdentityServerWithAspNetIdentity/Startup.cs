@@ -231,7 +231,7 @@ namespace StsServerIdentity
                 //CertificateThumbprint = configuration["CertificateThumbprint"],
 
                 // development certificate
-                DevelopmentCertificatePfx = Path.Combine(environment.ContentRootPath, "sts_dev_cert.pfx"),
+                DevelopmentCertificatePfx = Path.Combine(environment.ContentRootPath, "cert_ecdsa384.pfx"),
                 DevelopmentCertificatePassword = "1234" //configuration["DevelopmentCertificatePassword"] //"1234",
             };
 
