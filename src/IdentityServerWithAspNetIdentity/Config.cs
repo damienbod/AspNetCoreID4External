@@ -65,17 +65,21 @@ namespace StsServerIdentity
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris = new List<string>
                     {
-                        "https://localhost:44334"
+                        "https://localhost:44334",
+                        "https://localhost:4200"
 
                     },
                     PostLogoutRedirectUris = new List<string>
                     {
                         "https://localhost:44334",
-                        "https://localhost:44334/unauthorized"
+                        "https://localhost:44334/unauthorized",
+                        "https://localhost:4200",
+                        "https://localhost:4200/unauthorized"
                     },
                     AllowedCorsOrigins = new List<string>
                     {
-                        "https://localhost:44334"
+                        "https://localhost:44334",
+                        "https://localhost:4200"
                     },
                     AllowedScopes = new List<string>
                     {
