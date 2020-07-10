@@ -32,16 +32,13 @@ namespace StsServerIdentity
             {
                 new ApiResource("dataEventRecordsApi")
                 {
-                    ApiSecrets =
-                    {
-                        new Secret("dataEventRecordsSecret".Sha256())
-                    },
+                    ApiSecrets = { new Secret("dataEventRecordsSecret".Sha256()) },
+                    Scopes = { "dataEventRecords" },
                     UserClaims = { "role", "admin", "user", "dataEventRecords", "dataEventRecords.admin", "dataEventRecords.user" }
                 }
             };
         }
 
-        // clients want to access resources (aka scopes)
         public static IEnumerable<Client> GetClients()
         {
             // client credentials client
@@ -65,17 +62,21 @@ namespace StsServerIdentity
                     AllowAccessTokensViaBrowser = true,
                     RedirectUris = new List<string>
                     {
-                        "https://localhost:44334"
+                        "https://localhost:44334",
+                        "https://localhost:4200"
 
                     },
                     PostLogoutRedirectUris = new List<string>
                     {
                         "https://localhost:44334",
-                        "https://localhost:44334/unauthorized"
+                        "https://localhost:44334/unauthorized",
+                        "https://localhost:4200",
+                        "https://localhost:4200/unauthorized"
                     },
                     AllowedCorsOrigins = new List<string>
                     {
-                        "https://localhost:44334"
+                        "https://localhost:44334",
+                        "https://localhost:4200"
                     },
                     AllowedScopes = new List<string>
                     {

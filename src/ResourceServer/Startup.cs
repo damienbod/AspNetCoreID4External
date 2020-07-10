@@ -45,6 +45,7 @@ namespace ResourceServer
                             .AllowCredentials()
                             .WithOrigins(
                                 "https://localhost:44337",
+                                "https://localhost:4200",
                                 "https://localhost:44390",
                                 "https://localhost:44334")
                             .SetIsOriginAllowedToAllowWildcardSubdomains()
@@ -61,7 +62,7 @@ namespace ResourceServer
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
               .AddIdentityServerAuthentication(options =>
               {
-                  options.Authority = "https://localhost:44337/";
+                  options.Authority = "https://localhost:44337";
                   options.ApiName = "dataEventRecordsApi";
                   options.ApiSecret = "dataEventRecordsSecret";
               });
