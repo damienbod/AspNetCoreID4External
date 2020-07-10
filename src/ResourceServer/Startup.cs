@@ -45,6 +45,7 @@ namespace ResourceServer
                             .AllowCredentials()
                             .WithOrigins(
                                 "https://localhost:44337",
+                                "https://localhost:4200",
                                 "https://localhost:44390",
                                 "https://localhost:44334")
                             .SetIsOriginAllowedToAllowWildcardSubdomains()
