@@ -67,22 +67,7 @@ namespace StsServerIdentity
                 claims.Add(new Claim(JwtClaimTypes.Scope, "dataEventRecords"));
             }
 
-            if (user.SecuredFilesRole == "securedFiles.admin")
-            {
-                claims.Add(new Claim(JwtClaimTypes.Role, "securedFiles.admin"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "securedFiles.user"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "securedFiles"));
-                claims.Add(new Claim(JwtClaimTypes.Scope, "securedFiles"));
-            }
-            else
-            {
-                claims.Add(new Claim(JwtClaimTypes.Role, "securedFiles.user"));
-                claims.Add(new Claim(JwtClaimTypes.Role, "securedFiles"));
-                claims.Add(new Claim(JwtClaimTypes.Scope, "securedFiles"));
-            }
-
             claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email));
-
 
             context.IssuedClaims = claims;
         }
