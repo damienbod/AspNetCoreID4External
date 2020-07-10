@@ -62,7 +62,7 @@ namespace ResourceServer
             services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
               .AddIdentityServerAuthentication(options =>
               {
-                  options.Authority = "https://localhost:44337/";
+                  options.Authority = "https://localhost:44337";
                   options.ApiName = "dataEventRecordsApi";
                   options.ApiSecret = "dataEventRecordsSecret";
               });

@@ -32,16 +32,13 @@ namespace StsServerIdentity
             {
                 new ApiResource("dataEventRecordsApi")
                 {
-                    ApiSecrets =
-                    {
-                        new Secret("dataEventRecordsSecret".Sha256())
-                    },
+                    ApiSecrets = { new Secret("dataEventRecordsSecret".Sha256()) },
+                    Scopes = { "dataEventRecords" },
                     UserClaims = { "role", "admin", "user", "dataEventRecords", "dataEventRecords.admin", "dataEventRecords.user" }
                 }
             };
         }
 
-        // clients want to access resources (aka scopes)
         public static IEnumerable<Client> GetClients()
         {
             // client credentials client
