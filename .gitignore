@@ -12,3 +12,6 @@ src/AngularClient/wwwroot/dist/app.bundle.js.map
 /src/ResourceServer
 /src/IdentityServerWithAspNetIdentity/node_modules/
 /src/AngularClient/AngularClient.csproj.user
+/src/IdentityServerWithAspNetIdentity/Properties/serviceDependencies.json
+/src/IdentityServerWithAspNetIdentity/Properties/serviceDependencies.local.json
+/src/IdentityServerWithAspNetIdentity/Properties/serviceDependencies.local.json.user
