@@ -58,8 +58,8 @@ namespace StsServerIdentity
 
                         config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                             .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                            .AddEnvironmentVariables();
-                        //.AddUserSecrets("your user secret....");
+                            .AddEnvironmentVariables()
+                            .AddUserSecrets("AspNetCoreID4External-c23d2237a4-eb8832a1-452ac7");
                     }
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
@@ -69,7 +69,8 @@ namespace StsServerIdentity
                         .ReadFrom.Configuration(hostingContext.Configuration)
                         .Enrich.FromLogContext()
                         .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                        .WriteTo.File("../StsLogs.txt")
                 );
-            });
+                });
     }
 }
