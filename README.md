@@ -14,9 +14,9 @@ https://damienbod.com/2017/07/11/adding-an-external-microsoft-login-to-identitys
 https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-identityserver4-and-twilio/
 
 
-### history 
+### History 
 
-<strong>2020-07-10</strong> Added Angular CLI client
+<strong>2020-07-11</strong> Added Angular CLI client using refresh tokens
 
 <strong>2020-07-05</strong> Updated all npm, nuget packages
 
