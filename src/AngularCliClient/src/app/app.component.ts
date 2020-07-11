@@ -1,7 +1,4 @@
-import {
-    OidcClientNotification,
-    OidcSecurityService,
-} from 'angular-auth-oidc-client';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -14,13 +11,10 @@ import { Observable } from 'rxjs';
 export class AppComponent implements OnInit {
 
     title = '';
-    userDataChanged$: Observable<OidcClientNotification<any>>;
     userData$: Observable<any>;
     isAuthenticated = false;
 
-    constructor(
-        public oidcSecurityService: OidcSecurityService,
-    ) {
+    constructor(public oidcSecurityService: OidcSecurityService) {
         console.log('AppComponent STARTING');
     }
 
