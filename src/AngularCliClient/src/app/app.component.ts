@@ -14,7 +14,7 @@ export class AppComponent implements OnInit {
     userData$: Observable<any>;
     isAuthenticated = false;
 
-    constructor(public oidcSecurityService: OidcSecurityService) {
+    constructor(private oidcSecurityService: OidcSecurityService) {
         console.log('AppComponent STARTING');
     }
 
