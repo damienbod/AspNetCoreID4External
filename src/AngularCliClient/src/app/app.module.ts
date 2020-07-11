@@ -17,11 +17,11 @@ export function configureAuth(oidcConfigService: OidcConfigService): any {
           redirectUrl: window.location.origin,
           postLogoutRedirectUri: window.location.origin,
           clientId: 'angularclient',
-          scope: 'openid profile email dataEventRecords',
+          scope: 'openid profile email dataEventRecords offline_access',
           responseType: 'code',
           silentRenew: true,
-          silentRenewUrl: `${window.location.origin}/silent-renew.html`,
           renewTimeBeforeTokenExpiresInSeconds: 10,
+          useRefreshToken: true,
           logLevel: LogLevel.Debug,
       });
 }
