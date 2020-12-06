@@ -3,17 +3,6 @@
 
 https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-core-with-openid-connect-and-azure-active-directory/
 
-## Adding an external Microsoft login to IdentityServer4
-
-https://damienbod.com/2017/07/11/adding-an-external-microsoft-login-to-identityserver4/
-
-## Implementing Two-factor authentication with IdentityServer4 and Twilio
-
-### This is no longer recommended, removed from code. See history
-
-https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-identityserver4-and-twilio/
-
-
 ### History 
 
 <strong>2020-12-06</strong> Update to .NET 5, Using only Angular CLI
@@ -61,3 +50,16 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 <strong>2017-11-05</strong> Updated to Angular 5 and Typescript 2.6.1
 
 <strong>2017-09-23</strong> Updated to ASP.NET Core 2.0
+
+# Old blogs
+
+## Adding an external Microsoft login to IdentityServer4
+
+https://damienbod.com/2017/07/11/adding-an-external-microsoft-login-to-identityserver4/
+
+## Implementing Two-factor authentication with IdentityServer4 and Twilio
+
+### This is no longer recommended, removed from code. See history
+
+https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-identityserver4-and-twilio/
+
