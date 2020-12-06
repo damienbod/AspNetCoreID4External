@@ -17,8 +17,8 @@ namespace StsServerIdentity
                 new IdentityResources.Email()
             };
         }
-		
-		 public static IEnumerable<ApiScope> GetApiScopes()
+
+        public static IEnumerable<ApiScope> GetApiScopes()
         {
             return new List<ApiScope>
             {
