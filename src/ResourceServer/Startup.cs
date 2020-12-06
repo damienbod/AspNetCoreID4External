@@ -15,20 +15,16 @@ namespace ResourceServer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _webHostEnvironment = webHostEnvironment;
         }
 
         public IConfiguration Configuration { get; }
 
-        private readonly IWebHostEnvironment _webHostEnvironment;
-
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = Configuration.GetConnectionString("DefaultConnection");
-            var folderForKeyStore = Configuration["Production:KeyStoreFolderWhichIsBacked"];
 
             services.AddDbContext<DataEventRecordContext>(options =>
                 options.UseSqlite(connection)
@@ -41,11 +37,7 @@ namespace ResourceServer
                     {
                         builder
                             .AllowCredentials()
-                            .WithOrigins(
-                                "https://localhost:44337",
-                                "https://localhost:4200",
-                                "https://localhost:44390",
-                                "https://localhost:44334")
+                            .WithOrigins("https://localhost:4200")
                             .SetIsOriginAllowedToAllowWildcardSubdomains()
                             .AllowAnyHeader()
                             .AllowAnyMethod();
