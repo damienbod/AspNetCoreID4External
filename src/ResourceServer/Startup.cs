@@ -4,33 +4,27 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using IdentityServer4.AccessTokenValidation;
-using Microsoft.AspNetCore.Mvc;
-using System.Reflection;
 using System;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace ResourceServer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            _webHostEnvironment = webHostEnvironment;
         }
 
         public IConfiguration Configuration { get; }
 
-        private readonly IWebHostEnvironment _webHostEnvironment;
-
         public void ConfigureServices(IServiceCollection services)
         {
             var connection = Configuration.GetConnectionString("DefaultConnection");
-            var folderForKeyStore = Configuration["Production:KeyStoreFolderWhichIsBacked"];
 
             services.AddDbContext<DataEventRecordContext>(options =>
                 options.UseSqlite(connection)
@@ -43,11 +37,7 @@ namespace ResourceServer
                     {
                         builder
                             .AllowCredentials()
-                            .WithOrigins(
-                                "https://localhost:44337",
-                                "https://localhost:4200",
-                                "https://localhost:44390",
-                                "https://localhost:44334")
+                            .WithOrigins("https://localhost:4200")
                             .SetIsOriginAllowedToAllowWildcardSubdomains()
                             .AllowAnyHeader()
                             .AllowAnyMethod();
@@ -75,24 +65,48 @@ namespace ResourceServer
                 });
                 options.AddPolicy("dataEventRecordsUser", policyUser =>
                 {
-                    policyUser.RequireClaim("role",  "dataEventRecords.user");
+                    policyUser.RequireClaim("role", "dataEventRecords.user");
                 });
             });
 
-             services.AddControllers()
-               .AddNewtonsoftJson();
+            services.AddControllers()
+              .AddNewtonsoftJson();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
+                // add JWT Authentication
+                var securityScheme = new OpenApiSecurityScheme
                 {
-                    Version = "v1",
-                    Title = "Docs API",
+                    Name = "JWT Authentication",
+                    Description = "Enter JWT Bearer token **_only_**",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer", // must be lower case
+                    BearerFormat = "JWT",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {securityScheme, new string[] { }}
                 });
 
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "An API ",
+                    Version = "v1",
+                    Description = "An API",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "damienbod",
+                        Email = string.Empty,
+                        Url = new Uri("https://damienbod.com/"),
+                    },
+                });
             });
 
             services.AddScoped<IDataEventRecordRepository, DataEventRecordRepository>();
@@ -105,7 +119,7 @@ namespace ResourceServer
             app.UseStaticFiles();
 
             app.UseRouting();
-			
+
             app.UseAuthentication();
             app.UseAuthorization();
 

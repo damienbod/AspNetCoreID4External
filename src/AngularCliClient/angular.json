@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "AngularCliClient": {
+    "angular-oidc-oauth2": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,20 +13,18 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/AngularCliClient",
+            "outputPath": "dist/angular-oidc-oauth2",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.css"
-            ],
-            "scripts": []
+            "assets": ["src/favicon.ico", "src/assets", "src/silent-renew.html"],
+            "styles": ["src/styles.css"],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+          ]
           },
           "configurations": {
             "production": {
@@ -39,7 +37,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -62,18 +59,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "AngularCliClient:build"
+            "browserTarget": "angular-oidc-oauth2:build",
+            "sslKey": "certs/dev_localhost.key",
+            "sslCert": "certs/dev_localhost.pem",
+            "port": 4200
           },
           "configurations": {
             "production": {
-              "browserTarget": "AngularCliClient:build:production"
+              "browserTarget": "angular-oidc-oauth2:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "AngularCliClient:build"
+            "browserTarget": "angular-oidc-oauth2:build"
           }
         },
         "test": {
@@ -83,13 +83,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.css"
-            ],
+            "assets": ["src/favicon.ico", "src/assets", "src/silent-renew.html"],
+            "styles": ["src/styles.css"],
             "scripts": []
           }
         },
@@ -101,24 +96,26 @@
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "AngularCliClient:serve"
+            "devServerTarget": "angular-oidc-oauth2:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "AngularCliClient:serve:production"
+              "devServerTarget": "angular-oidc-oauth2:serve:production"
             }
           }
         }
       }
-    }},
-  "defaultProject": "AngularCliClient"
+    }
+  },
+  "defaultProject": "angular-oidc-oauth2",
+  "cli": {
+    "analytics": false
+  }
 }

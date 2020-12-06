@@ -16,6 +16,8 @@ https://damienbod.com/2017/07/14/implementing-two-factor-authentication-with-ide
 
 ### History 
 
+<strong>2020-12-06</strong> Update to .NET 5, Using only Angular CLI
+
 <strong>2020-07-11</strong> Added Angular CLI client using refresh tokens
 
 <strong>2020-07-05</strong> Updated all npm, nuget packages

@@ -31,13 +31,13 @@ namespace ResourceServer.Repositories
         }
 
         [HttpPost]
-        public void Post(DataEventRecord dataEventRecord )
+        public void Post(DataEventRecord dataEventRecord)
         {
             _context.DataEventRecords.Add(dataEventRecord);
             _context.SaveChanges();
         }
 
-        public void Put(long id, [FromBody]DataEventRecord dataEventRecord)
+        public void Put(long id, [FromBody] DataEventRecord dataEventRecord)
         {
             _context.DataEventRecords.Update(dataEventRecord);
             _context.SaveChanges();

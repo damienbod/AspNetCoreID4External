@@ -43,7 +43,7 @@ namespace StsServerIdentity
 
         public void ConfigureServices(IServiceCollection services)
         {
-			_clientId = _configuration["MicrosoftClientId"];
+            _clientId = _configuration["MicrosoftClientId"];
             _clientSecret = _configuration["MircosoftClientSecret"];
             services.Configure<StsConfig>(_configuration.GetSection("StsConfig"));
             services.Configure<EmailSettings>(_configuration.GetSection("EmailSettings"));
@@ -125,7 +125,7 @@ namespace StsServerIdentity
                 .AddSigningCredential(eCDsaSecurityKey, "ES384") // ecdsaCertificate
                 .AddInMemoryIdentityResources(Config.GetIdentityResources())
                 .AddInMemoryApiResources(Config.GetApiResources())
-				.AddInMemoryApiScopes(Config.GetApiScopes())
+                .AddInMemoryApiScopes(Config.GetApiScopes())
                 .AddInMemoryClients(Config.GetClients())
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddProfileService<IdentityWithAdditionalClaimsProfileService>();
@@ -150,7 +150,6 @@ namespace StsServerIdentity
             if (_environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -167,7 +166,7 @@ namespace StsServerIdentity
                 .StyleSources(s => s.Self())
                 .StyleSources(s => s.UnsafeInline())
                 .FontSources(s => s.Self())
-                .FrameAncestors(s => s.Self()) 
+                .FrameAncestors(s => s.Self())
                 .FrameAncestors(s => s.CustomSources("https://localhost:44334"))
                 .ImageSources(imageSrc => imageSrc.Self())
                 .ImageSources(imageSrc => imageSrc.CustomSources("data:"))
