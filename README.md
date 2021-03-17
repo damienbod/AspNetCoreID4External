@@ -5,6 +5,8 @@ https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-co
 
 ### History 
 
+<strong>2021-03-17</strong> Updated packages
+
 <strong>2020-12-06</strong> Update to .NET 5, Using only Angular CLI
 
 <strong>2020-07-11</strong> Added Angular CLI client using refresh tokens
