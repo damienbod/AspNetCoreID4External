@@ -88,6 +88,7 @@ namespace StsServerIdentity
                      options.RemoteAuthenticationTimeout = TimeSpan.FromSeconds(30);
                      options.Authority = "https://login.microsoftonline.com/common/v2.0/";
                      options.ResponseType = "code";
+                     options.UsePkce = true;
                      options.Scope.Add("profile");
                      options.Scope.Add("email");
                      options.TokenValidationParameters = new TokenValidationParameters
