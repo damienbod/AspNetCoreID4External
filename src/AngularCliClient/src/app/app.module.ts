@@ -8,11 +8,18 @@ import { DataEventRecordsModule } from './dataeventrecords/dataeventrecords.modu
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { HomeComponent } from './home/home.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
-import { AuthModule, OidcConfigService, LogLevel } from 'angular-auth-oidc-client';
+import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
 
-export function configureAuth(oidcConfigService: OidcConfigService): any {
-  return () =>
-      oidcConfigService.withConfig({
+
+@NgModule({
+  imports: [
+      BrowserModule,
+      FormsModule,
+      routing,
+      HttpClientModule,
+      DataEventRecordsModule,
+      AuthModule.forRoot({
+        config: {
           stsServer: 'https://localhost:44337',
           redirectUrl: window.location.origin,
           postLogoutRedirectUri: window.location.origin,
@@ -23,17 +30,8 @@ export function configureAuth(oidcConfigService: OidcConfigService): any {
           renewTimeBeforeTokenExpiresInSeconds: 10,
           useRefreshToken: true,
           logLevel: LogLevel.Debug,
-      });
-}
-
-@NgModule({
-  imports: [
-      BrowserModule,
-      FormsModule,
-      routing,
-      HttpClientModule,
-      DataEventRecordsModule,
-      AuthModule.forRoot(),
+        },
+      }),
   ],
   declarations: [
       AppComponent,
@@ -41,15 +39,7 @@ export function configureAuth(oidcConfigService: OidcConfigService): any {
       HomeComponent,
       UnauthorizedComponent
   ],
-  providers: [
-      OidcConfigService,
-      {
-          provide: APP_INITIALIZER,
-          useFactory: configureAuth,
-          deps: [OidcConfigService, HttpClient],
-          multi: true,
-      }
-  ],
+  providers: [],
   bootstrap: [AppComponent],
 })
 
