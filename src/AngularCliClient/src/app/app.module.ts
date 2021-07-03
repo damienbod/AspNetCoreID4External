@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { routing } from './app.routes';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { DataEventRecordsModule } from './dataeventrecords/dataeventrecords.module';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 import { HomeComponent } from './home/home.component';
@@ -20,7 +20,7 @@ import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
       DataEventRecordsModule,
       AuthModule.forRoot({
         config: {
-          stsServer: 'https://localhost:44337',
+          authority: 'https://localhost:44337',
           redirectUrl: window.location.origin,
           postLogoutRedirectUri: window.location.origin,
           clientId: 'angularclient',
