@@ -5,55 +5,57 @@ https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-co
 
 ### History 
 
-<strong>2021-07-01</strong> Updated OIDC npm
+2021-07-01 Updated .NET 6, Angular 13
 
-<strong>2021-03-17</strong> Updated packages
+2021-07-01 Updated OIDC npm
 
-<strong>2020-12-06</strong> Update to .NET 5, Using only Angular CLI
+2021-03-17 Updated packages
 
-<strong>2020-07-11</strong> Added Angular CLI client using refresh tokens
+2020-12-06 Update to .NET 5, Using only Angular CLI
 
-<strong>2020-07-05</strong> Updated all npm, nuget packages
+2020-07-11 Added Angular CLI client using refresh tokens
 
-<strong>2020-05-06</strong> Updated FIDO2, switched to refresh tokens, using EC certificate
+2020-07-05 Updated all npm, nuget packages
 
-<strong>2020-05-03</strong> Updated OIDC lib to version 11, nuget packages
+2020-05-06 Updated FIDO2, switched to refresh tokens, using EC certificate
 
-<strong>2020-03-03</strong> Added support for FIDO2, updated to Angular 9
+2020-05-03 Updated OIDC lib to version 11, nuget packages
 
-<strong>2020-01-04</strong> Updated nuget packages, same site fix
+2020-03-03 Added support for FIDO2, updated to Angular 9
 
-<strong>2019-12-13</strong> Updated to .NET Core 3.1, Angular 8.2.14
+2020-01-04 Updated nuget packages, same site fix
 
-<strong>2019-10-07</strong> Updated to .NET Core 3.0, Angular 8.2.9
+2019-12-13 Updated to .NET Core 3.1, Angular 8.2.14
 
-<strong>2019-05-30</strong> Updated to Angular 8.0.0
+2019-10-07 Updated to .NET Core 3.0, Angular 8.2.9
 
-<strong>2019-05-15</strong> Switched to OIDC code flow with PKCE, updated to Angular 7.2.15
+2019-05-30 Updated to Angular 8.0.0
 
-<strong>2019-05-14</strong> Updated Microsoft login to OIDC login, updated STS
+2019-05-15 Switched to OIDC code flow with PKCE, updated to Angular 7.2.15
 
-<strong>2019-03-31</strong> Updated to Angular 7.2.11, NuGet packages
+2019-05-14 Updated Microsoft login to OIDC login, updated STS
 
-<strong>2019-02-07</strong> Updated to Angular 7.2.4, ASP.NET Core 2.2
+2019-03-31 Updated to Angular 7.2.11, NuGet packages
 
-<strong>2018-10-28</strong> Updated to Angular 7.0.0, ASP.NET Core 2.1
+2019-02-07 Updated to Angular 7.2.4, ASP.NET Core 2.2
 
-<strong>2018-05-27</strong> Updated packages
+2018-10-28 Updated to Angular 7.0.0, ASP.NET Core 2.1
 
-<strong>2018-05-08</strong> Updated to .NET Core 2.1 rc1
+2018-05-27 Updated packages
 
-<strong>2018-05-04</strong> Updated to Angular 6
+2018-05-08 Updated to .NET Core 2.1 rc1
 
-<strong>2018-05-01</strong> Updated to bootstrap 4, switch to Authenticator
+2018-05-04 Updated to Angular 6
 
-<strong>2018-05-01</strong> Updated Identity to use 2FA with TOTP, Angular 5.2.10, angular-auth-oidc-client 4.1.0
+2018-05-01 Updated to bootstrap 4, switch to Authenticator
 
-<strong>2018-02-03</strong> Updated npm and nuget packages, Angular 5.2.3, angular-auth-oidc-client 4.0.1
+2018-05-01 Updated Identity to use 2FA with TOTP, Angular 5.2.10, angular-auth-oidc-client 4.1.0
 
-<strong>2017-11-05</strong> Updated to Angular 5 and Typescript 2.6.1
+2018-02-03 Updated npm and nuget packages, Angular 5.2.3, angular-auth-oidc-client 4.0.1
 
-<strong>2017-09-23</strong> Updated to ASP.NET Core 2.0
+2017-11-05 Updated to Angular 5 and Typescript 2.6.1
+
+2017-09-23 Updated to ASP.NET Core 2.0
 
 # Old blogs
 

@@ -177,7 +177,7 @@ namespace StsServerIdentity.Controllers
             }
             else
             {
-                _logger.LogError("No consent request matching request: {0}", returnUrl);
+                _logger.LogError("No consent request matching request: {returnUrl}", returnUrl);
             }
 
             return null;

@@ -449,7 +449,7 @@ namespace StsServerIdentity.Controllers
                 // Send an email with this link
                 var code = await _userManager.GeneratePasswordResetTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: HttpContext.Request.Scheme);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code }, protocol: HttpContext.Request.Scheme);
                 await _emailSender.SendEmail(
                    model.Email,
                    "Reset Password",
@@ -552,7 +552,7 @@ namespace StsServerIdentity.Controllers
             }
             if (model.SelectedProvider == "Authenticator")
             {
-                return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+                return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, model.ReturnUrl, model.RememberMe });
             }
 
             // Email used
@@ -570,7 +570,7 @@ namespace StsServerIdentity.Controllers
                 await _emailSender.SendEmail(await _userManager.GetEmailAsync(user), "Security Code", message, "Hi Sir");
             }
 
-            return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, ReturnUrl = model.ReturnUrl, RememberMe = model.RememberMe });
+            return RedirectToAction(nameof(VerifyCode), new { Provider = model.SelectedProvider, model.ReturnUrl, model.RememberMe });
         }
 
         //
