@@ -1,7 +1,9 @@
 
-## Updating Microsoft Account Logins in ASP.NET Core with OpenID Connect and Azure Active Directory
+[![.NET](https://github.com/damienbod/AspNetCoreID4External/actions/workflows/dotnet.yml/badge.svg)](https://github.com/damienbod/AspNetCoreID4External/actions/workflows/dotnet.yml)
 
-https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-core-with-openid-connect-and-azure-active-directory/
+## Blogs
+
+[Updating Microsoft Account Logins in ASP.NET Core with OpenID Connect and Azure Active Directory](https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-core-with-openid-connect-and-azure-active-directory/)
 
 ### History 
 
