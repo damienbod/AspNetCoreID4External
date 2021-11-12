@@ -12,7 +12,7 @@ namespace ResourceServer.Repositories
         private readonly DataEventRecordContext _context;
         private readonly ILogger _logger;
 
-        public DataEventRecordRepository(DataEventRecordContext context, ILoggerFactory loggerFactory, IDataProtectionProvider provider)
+        public DataEventRecordRepository(DataEventRecordContext context, ILoggerFactory loggerFactory)
         {
             _context = context;
             _logger = loggerFactory.CreateLogger("IDataEventRecordResporitory");
