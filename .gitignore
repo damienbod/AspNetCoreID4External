@@ -15,3 +15,5 @@ src/AngularClient/wwwroot/dist/app.bundle.js.map
 /src/IdentityServerWithAspNetIdentity/Properties/serviceDependencies.json
 /src/IdentityServerWithAspNetIdentity/Properties/serviceDependencies.local.json
 /src/IdentityServerWithAspNetIdentity/Properties/serviceDependencies.local.json.user
+/src/AngularCliClient/.angular/cache/
+/src/AngularCliClient/.angular/cache
