@@ -7,6 +7,8 @@
 
 ### History 
 
+2022-01-28 Updated packages
+
 2021-11-12 Updated .NET 6, Angular 13
 
 2021-07-01 Updated OIDC npm
