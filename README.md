@@ -7,6 +7,8 @@
 
 ### History 
 
+2023-01-28 Updated packages
+
 2022-01-28 Updated packages
 
 2021-11-12 Updated .NET 6, Angular 13
