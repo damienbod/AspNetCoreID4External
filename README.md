@@ -1,7 +1,42 @@
 
 [![.NET](https://github.com/damienbod/AspNetCoreID4External/actions/workflows/dotnet.yml/badge.svg)](https://github.com/damienbod/AspNetCoreID4External/actions/workflows/dotnet.yml)
 
+## OIDC setup for external IDP
+
+````csharp
+var aadApp = configuration.GetSection("AadApp");
+services.AddOidcStateDataFormatterCache("AADandMicrosoft");
+
+services.AddAuthentication(options => // Application
+{
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddOpenIdConnect("AADandMicrosoft", "AAD Login", options => 
+{
+    //  https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration
+    options.ClientId = aadApp["ClientId"];
+    options.ClientSecret = aadApp["ClientSecret"];
+    options.Authority = aadApp["AuthorityUrl"];
+
+    options.SignInScheme = "Identity.External";
+    options.RemoteAuthenticationTimeout = TimeSpan.FromSeconds(20);
+    options.ResponseType = "code";
+    options.Scope.Add("profile");
+    options.Scope.Add("email");
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false, // multi tenant => means all tenants can use this
+        NameClaimType = "email",
+    };
+    options.CallbackPath = "/signin-oidc";
+    options.Prompt = "select_account"; // login, consent select_account
+});
+```
+
 ## Blogs
+
+### Old
 
 [Updating Microsoft Account Logins in ASP.NET Core with OpenID Connect and Azure Active Directory](https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-core-with-openid-connect-and-azure-active-directory/)
 
