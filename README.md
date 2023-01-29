@@ -3,7 +3,7 @@
 
 ## OIDC setup for external IDP
 
-````csharp
+```csharp
 var aadApp = configuration.GetSection("AadApp");
 services.AddOidcStateDataFormatterCache("AADandMicrosoft");
 
