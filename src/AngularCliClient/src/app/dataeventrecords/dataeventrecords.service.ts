@@ -15,17 +15,19 @@ export class DataEventRecordsService {
         this.actionUrl = `https://localhost:44390/api/DataEventRecords/`;
     }
 
-    private setHeaders(): any {
-        this.headers = new HttpHeaders();
-        this.headers = this.headers.set('Content-Type', 'application/json');
-        this.headers = this.headers.set('Accept', 'application/json');
+    private setHeaders() {
+		this.headers = new HttpHeaders();
+		this.headers = this.headers.set('Content-Type', 'application/json');
+		this.headers = this.headers.set('Accept', 'application/json');
 
-        const token = this.securityService.getAccessToken();
-        if (token !== '') {
-            const tokenValue = 'Bearer ' + token;
-            this.headers = this.headers.append('Authorization', tokenValue);
-        }
-    }
+		this.securityService.getAccessToken().subscribe((token) => {
+		  // console.log(token)
+		  if (token !== '') {
+			const tokenValue = 'Bearer ' + token;
+			this.headers = this.headers.append('Authorization', tokenValue);
+		  }
+		});
+	  }
 
     public GetAll = (): Observable<DataEventRecord[]> => {
         this.setHeaders();
