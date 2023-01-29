@@ -2,11 +2,14 @@ using Fido2NetLib;
 using IdentityProvider.Data;
 using IdentityProvider.Services.Certificate;
 using IdentityServerHost.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
 
 namespace IdentityProvider;
@@ -63,6 +66,35 @@ internal static class HostingExtensions
             options.Cookie.HttpOnly = true;
             options.Cookie.SameSite = SameSiteMode.None;
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        });
+
+        var aadApp = configuration.GetSection("AadApp");
+        services.AddOidcStateDataFormatterCache("AADandMicrosoft");
+
+        services.AddAuthentication(options => // Application
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+        })
+        .AddOpenIdConnect("AADandMicrosoft", "AAD Login", options => 
+        {
+            //  https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration
+            options.ClientId = aadApp["ClientId"];
+            options.ClientSecret = aadApp["ClientSecret"];
+            options.Authority = aadApp["AuthorityUrl"];
+
+            options.SignInScheme = "Identity.External";
+            options.RemoteAuthenticationTimeout = TimeSpan.FromSeconds(20);
+            options.ResponseType = "code";
+            options.Scope.Add("profile");
+            options.Scope.Add("email");
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false, // multi tenant => means all tenants can use this
+                NameClaimType = "email",
+            };
+            options.CallbackPath = "/signin-oidc";
+            options.Prompt = "select_account"; // login, consent select_account
         });
 
         ECDsaSecurityKey eCDsaSecurityKey = new(x509Certificate2Certs.ActiveCertificate.GetECDsaPrivateKey());

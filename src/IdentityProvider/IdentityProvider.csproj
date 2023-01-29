@@ -3,6 +3,7 @@
   <PropertyGroup>
 	<TargetFramework>net7.0</TargetFramework>
 	<ImplicitUsings>enable</ImplicitUsings>
+	<UserSecretsId>5706599a-cec4-4184-950e-2b3850c191b3</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
