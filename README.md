@@ -40,7 +40,7 @@ services.AddAuthentication(options => // Application
 
 [Updating Microsoft Account Logins in ASP.NET Core with OpenID Connect and Azure Active Directory](https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-core-with-openid-connect-and-azure-active-directory/)
 
-### History 
+## History 
 
 2023-01-29 Updated identity provider
 
