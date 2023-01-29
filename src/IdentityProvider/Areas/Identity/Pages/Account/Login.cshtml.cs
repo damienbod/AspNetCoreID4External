@@ -125,7 +125,7 @@ namespace IdentityProvider.Areas.Identity.Pages.Account
                         return RedirectToPage("./LoginFido2Mfa", new { ReturnUrl = returnUrl, Input.RememberMe });
                     }
 
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {

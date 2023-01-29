@@ -26,6 +26,6 @@ public class EmailSender : IEmailSender
 
         msg.SetReplyTo(new EmailAddress(_optionsEmailSettings.Value.SenderEmailAddress, "damienbod"));
 
-        var response = await client.SendEmailAsync(msg);
+        await client.SendEmailAsync(msg);
     }
 }

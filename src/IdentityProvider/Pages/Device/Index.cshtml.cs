@@ -12,8 +12,6 @@ using IdentityServerHost.Pages.Consent;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace IdentityServerHost.Pages.Device;
 
@@ -23,19 +21,11 @@ public class Index : PageModel
 {
     private readonly IDeviceFlowInteractionService _interaction;
     private readonly IEventService _events;
-    private readonly IOptions<IdentityServerOptions> _options;
-    private readonly ILogger<Index> _logger;
 
-    public Index(
-        IDeviceFlowInteractionService interaction,
-        IEventService eventService,
-        IOptions<IdentityServerOptions> options,
-        ILogger<Index> logger)
+    public Index(IDeviceFlowInteractionService interaction, IEventService eventService)
     {
         _interaction = interaction;
         _events = eventService;
-        _options = options;
-        _logger = logger;
     }
 
     public ViewModel View { get; set; }
