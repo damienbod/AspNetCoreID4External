@@ -1,10 +1,12 @@
 using Fido2NetLib;
 using IdentityProvider.Data;
+using IdentityProvider.Services.Certificate;
 using IdentityServerHost.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Security.Cryptography.X509Certificates;
 
 namespace IdentityProvider;
 
@@ -12,12 +14,19 @@ internal static class HostingExtensions
 {
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
+        var services = builder.Services;
+        var configuration = builder.Configuration;
+        var environment = builder.Environment;
+
         builder.Services.AddRazorPages();
 
-        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        var x509Certificate2Certs = GetCertificates(environment, configuration)
+          .GetAwaiter().GetResult();
+
+        services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        builder.Services.AddCors(options =>
+        services.AddCors(options =>
         {
             options.AddPolicy("AllowAllOrigins",
                 builder =>
@@ -35,21 +44,21 @@ internal static class HostingExtensions
                 });
         });
 
-        builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+        services.AddIdentity<ApplicationUser, IdentityRole>()
           .AddEntityFrameworkStores<ApplicationDbContext>()
           .AddDefaultTokenProviders()
           .AddDefaultUI()
           .AddTokenProvider<Fido2UserTwoFactorTokenProvider>("FIDO2");
 
-        builder.Services.Configure<Fido2Configuration>(builder.Configuration.GetSection("fido2"));
-        builder.Services.AddScoped<Fido2Store>();
+        services.Configure<Fido2Configuration>(builder.Configuration.GetSection("fido2"));
+        services.AddScoped<Fido2Store>();
 
-        builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
+        services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
            AdditionalUserClaimsPrincipalFactory>();
 
         // Adds a default in-memory implementation of IDistributedCache.
-        builder.Services.AddDistributedMemoryCache();
-        builder.Services.AddSession(options =>
+        services.AddDistributedMemoryCache();
+        services.AddSession(options =>
         {
             options.IdleTimeout = TimeSpan.FromMinutes(2);
             options.Cookie.HttpOnly = true;
@@ -57,7 +66,7 @@ internal static class HostingExtensions
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         });
 
-        builder.Services.AddIdentityServer(options =>
+        services.AddIdentityServer(options =>
         {
             options.Events.RaiseErrorEvents = true;
             options.Events.RaiseInformationEvents = true;
@@ -76,10 +85,10 @@ internal static class HostingExtensions
         .AddAspNetIdentity<ApplicationUser>()
         .AddProfileService<IdentityWithAdditionalClaimsProfileService>();
 
-        builder.Services.AddAuthentication();
+        services.AddAuthentication();
 
-        builder.Services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
-        builder.Services.AddAuthorization(options =>
+        services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
+        services.AddAuthorization(options =>
         {
             options.AddPolicy("IsAdmin", policyIsAdminRequirement =>
             {
@@ -118,4 +127,28 @@ internal static class HostingExtensions
 
         return app;
     }
+
+    private static async Task<(X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate)> GetCertificates(IWebHostEnvironment environment, IConfiguration configuration)
+    {
+        var certificateConfiguration = new CertificateConfiguration
+        {
+            // Use an Azure key vault
+            CertificateNameKeyVault = configuration["CertificateNameKeyVault"], //"StsCert",
+            KeyVaultEndpoint = configuration["AzureKeyVaultEndpoint"], // "https://damienbod.vault.azure.net"
+
+            // Use a local store with thumbprint
+            //UseLocalCertStore = Convert.ToBoolean(configuration["UseLocalCertStore"]),
+            //CertificateThumbprint = configuration["CertificateThumbprint"],
+
+            // development certificate
+            DevelopmentCertificatePfx = Path.Combine(environment.ContentRootPath, "cert_ecdsa384.pfx"),
+            DevelopmentCertificatePassword = "1234" //configuration["DevelopmentCertificatePassword"] //"1234",
+        };
+
+        (X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate) certs = await CertificateService.GetCertificates(
+            certificateConfiguration).ConfigureAwait(false);
+
+        return certs;
+    }
+
 }
