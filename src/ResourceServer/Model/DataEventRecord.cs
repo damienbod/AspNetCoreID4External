@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿namespace ResourceServer.Model;
 
-namespace ResourceServer.Model
+// >dnx . ef migration add testMigration
+
+public class DataEventRecord
 {
-    // >dnx . ef migration add testMigration
+    public long Id { get; set; }
+    public string Name { get; set; }
 
-    public class DataEventRecord
-    {
-        public long Id { get; set; }
-        public string Name { get; set; }
+    public string Description { get; set; }
 
-        public string Description { get; set; }
-
-        public DateTime Timestamp { get; set; }
-    }
+    public DateTime Timestamp { get; set; }
 }
