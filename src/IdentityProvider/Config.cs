@@ -1,7 +1,7 @@
 ﻿using Duende.IdentityServer;
 using Duende.IdentityServer.Models;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 public static class Config
 {

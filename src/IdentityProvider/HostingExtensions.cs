@@ -1,12 +1,12 @@
 using Fido2NetLib;
-using IdentityServerAspNetIdentity.Data;
+using IdentityProvider.Data;
 using IdentityServerHost.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 internal static class HostingExtensions
 {

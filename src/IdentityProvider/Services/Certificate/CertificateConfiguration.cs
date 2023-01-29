@@ -1,4 +1,4 @@
-﻿namespace StsServerIdentity.Services.Certificate;
+﻿namespace IdentityProvider.Services.Certificate;
 
 public class CertificateConfiguration
 {

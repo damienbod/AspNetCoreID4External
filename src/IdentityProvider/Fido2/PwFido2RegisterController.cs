@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using static Fido2NetLib.Fido2;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using IdentityServerAspNetIdentity.Data;
+using IdentityProvider.Data;
 using IdentityServerHost.Models;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 [Route("api/[controller]")]
 public class PwFido2RegisterController : Controller

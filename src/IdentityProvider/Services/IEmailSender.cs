@@ -1,4 +1,4 @@
-﻿namespace StsServerIdentity.Services;
+﻿namespace IdentityProvider.Services;
 
 public interface IEmailSender
 {

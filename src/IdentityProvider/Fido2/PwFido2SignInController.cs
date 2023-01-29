@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using IdentityServerHost.Models;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 [Route("api/[controller]")]
 public class PwFido2SignInController : Controller

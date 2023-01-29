@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using IdentityServerHost.Models;
 using Microsoft.AspNetCore.Authorization;
 
-namespace IdentityServerAspNetIdentity.Areas.Identity.Pages.Account
+namespace IdentityProvider.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class LoginModel : PageModel

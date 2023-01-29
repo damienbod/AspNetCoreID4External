@@ -3,7 +3,7 @@ using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Services;
 using IdentityModel;
-using IdentityServerAspNetIdentity.Areas.Identity.Pages.Account;
+using IdentityProvider.Areas.Identity.Pages.Account;
 using IdentityServerHost.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

@@ -1,7 +1,5 @@
-using System;
-using System.Threading.Tasks;
 using Duende.IdentityServer.Services;
-using IdentityServerAspNetIdentity.Areas.Identity.Pages.Account;
+using IdentityProvider.Areas.Identity.Pages.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 

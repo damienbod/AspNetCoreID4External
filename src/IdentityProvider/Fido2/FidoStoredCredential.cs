@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 /// <summary>
 /// Represents a WebAuthn credential.

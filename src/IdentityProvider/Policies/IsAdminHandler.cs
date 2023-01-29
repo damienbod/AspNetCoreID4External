@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 public class IsAdminHandler : AuthorizationHandler<IsAdminRequirement>
 {

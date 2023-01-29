@@ -1,9 +1,9 @@
 ﻿using Fido2NetLib;
-using IdentityServerAspNetIdentity.Data;
+using IdentityProvider.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 public class Fido2Store
 {

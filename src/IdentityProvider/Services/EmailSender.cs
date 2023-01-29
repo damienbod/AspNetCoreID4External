@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using StsServerIdentity.Models;
+using IdentityProvider.Models;
 
-namespace StsServerIdentity.Services;
+namespace IdentityProvider.Services;
 
 public class EmailSender : IEmailSender
 {

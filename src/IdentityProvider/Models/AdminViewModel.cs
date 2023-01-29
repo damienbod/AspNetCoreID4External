@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IdentityServerAspNetIdentity.Models;
+namespace IdentityProvider.Models;
 
 public class AdminViewModel
 {

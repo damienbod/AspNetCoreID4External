@@ -7,7 +7,7 @@ using IdentityServerHost.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 public class IdentityWithAdditionalClaimsProfileService : ProfileService<ApplicationUser>
 {

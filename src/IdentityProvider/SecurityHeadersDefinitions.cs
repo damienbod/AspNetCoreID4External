@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 public static class SecurityHeadersDefinitions
 {

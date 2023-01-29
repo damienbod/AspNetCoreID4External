@@ -4,10 +4,10 @@ using Fido2NetLib;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using IdentityServerAspNetIdentity.Data;
+using IdentityProvider.Data;
 using IdentityServerHost.Models;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 [Route("api/[controller]")]
 public class MfaFido2SignInFidoController : Controller

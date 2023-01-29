@@ -1,7 +1,7 @@
 ﻿using IdentityServerHost.Models;
 using Microsoft.AspNetCore.Identity;
 
-namespace IdentityServerAspNetIdentity;
+namespace IdentityProvider;
 
 public class Fido2UserTwoFactorTokenProvider : IUserTwoFactorTokenProvider<ApplicationUser>
 {

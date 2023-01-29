@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using IdentityServerAspNetIdentity.Data;
-using IdentityServerAspNetIdentity.Models;
+using IdentityProvider.Data;
+using IdentityProvider.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Sts.Pages.Admin;
