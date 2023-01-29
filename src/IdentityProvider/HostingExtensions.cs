@@ -5,6 +5,7 @@ using IdentityServerHost.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Security.Cryptography.X509Certificates;
 
@@ -34,9 +35,7 @@ internal static class HostingExtensions
                     builder
                         .AllowCredentials()
                         .WithOrigins(
-                            "https://localhost:44311", 
-                            "https://localhost:44390", 
-                            "https://localhost:44395",
+                            "https://localhost:4200",
                             "https://localhost:5001")
                         .SetIsOriginAllowedToAllowWildcardSubdomains()
                         .AllowAnyHeader()
@@ -66,6 +65,8 @@ internal static class HostingExtensions
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
         });
 
+        ECDsaSecurityKey eCDsaSecurityKey = new(x509Certificate2Certs.ActiveCertificate.GetECDsaPrivateKey());
+
         services.AddIdentityServer(options =>
         {
             options.Events.RaiseErrorEvents = true;
@@ -78,6 +79,7 @@ internal static class HostingExtensions
             // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
             options.EmitStaticAudienceClaim = true;
         })
+        .AddSigningCredential(eCDsaSecurityKey, "ES384") // ecdsaCertificate
         .AddInMemoryIdentityResources(Config.IdentityResources)
         .AddInMemoryApiScopes(Config.ApiScopes)
         .AddInMemoryClients(Config.Clients)
