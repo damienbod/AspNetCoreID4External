@@ -7,6 +7,8 @@
 
 ### History 
 
+2023-01-29 Updated identity provider
+
 2023-01-28 Updated packages .NET 7 and others
 
 2022-01-28 Updated packages
