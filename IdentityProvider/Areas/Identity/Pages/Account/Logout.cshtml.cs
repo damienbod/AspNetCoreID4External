@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Services;
-using IdentityModel;
+using Duende.IdentityModel;
 using IdentityProvider.Areas.Identity.Pages.Account;
 using IdentityServerHost.Models;
 using Microsoft.AspNetCore.Authentication;
