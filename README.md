@@ -42,6 +42,7 @@ services.AddAuthentication(options => // Application
 
 ## History 
 
+- 2025-02-04 Updated packages, .NET 9
 - 2024-10-13 Updated packages
 - 2023-03-12 Updated packages
 - 2023-01-29 Updated identity provider
