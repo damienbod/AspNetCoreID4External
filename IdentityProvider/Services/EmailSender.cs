@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Options;
+﻿using IdentityProvider.Models;
+using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using IdentityProvider.Models;
 
 namespace IdentityProvider.Services;
 

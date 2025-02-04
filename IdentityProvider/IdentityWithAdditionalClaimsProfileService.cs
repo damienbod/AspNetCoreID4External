@@ -1,8 +1,8 @@
-﻿using Duende.IdentityServer;
+﻿using Duende.IdentityModel;
+using Duende.IdentityServer;
 using Duende.IdentityServer.AspNetIdentity;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
-using Duende.IdentityModel;
 using IdentityServerHost.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
@@ -11,7 +11,7 @@ namespace IdentityProvider;
 
 public class IdentityWithAdditionalClaimsProfileService : ProfileService<ApplicationUser>
 {
-    public IdentityWithAdditionalClaimsProfileService(UserManager<ApplicationUser> userManager, 
+    public IdentityWithAdditionalClaimsProfileService(UserManager<ApplicationUser> userManager,
         IUserClaimsPrincipalFactory<ApplicationUser> claimsFactory) : base(userManager, claimsFactory)
     {
     }

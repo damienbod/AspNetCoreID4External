@@ -1,8 +1,6 @@
 // Copyright (c) Duende Software. All rights reserved.
 // See LICENSE in the project root for license information.
 
-using System.Collections.Generic;
-
 namespace IdentityServerHost.Pages.Ciba;
 
 public class ViewModel
@@ -10,7 +8,7 @@ public class ViewModel
     public string ClientName { get; set; }
     public string ClientUrl { get; set; }
     public string ClientLogoUrl { get; set; }
-        
+
     public string BindingMessage { get; set; }
 
     public IEnumerable<ScopeViewModel> IdentityScopes { get; set; }

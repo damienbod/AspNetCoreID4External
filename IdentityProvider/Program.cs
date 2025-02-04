@@ -1,8 +1,5 @@
 using IdentityProvider;
 using Serilog;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using IdentityProvider.Data;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()

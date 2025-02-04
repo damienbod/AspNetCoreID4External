@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using IdentityProvider.Data;
+﻿using IdentityProvider.Data;
 using IdentityProvider.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace Sts.Pages.Admin;
 
@@ -16,7 +16,7 @@ public class IndexModel : PageModel
         _context = context;
     }
 
-    public IList<AdminViewModel> AdminViewModel { get;set; }
+    public IList<AdminViewModel> AdminViewModel { get; set; }
 
     public async Task OnGetAsync()
     {

@@ -1,11 +1,10 @@
-﻿using System.Text;
+﻿using Fido2NetLib;
 using Fido2NetLib.Objects;
-using Fido2NetLib;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using IdentityProvider.Data;
 using IdentityServerHost.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using System.Text;
 
 namespace IdentityProvider;
 

@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
 
 namespace IdentityProvider;
@@ -76,7 +75,7 @@ internal static class HostingExtensions
             options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
         })
-        .AddOpenIdConnect("AADandMicrosoft", "AAD Login", options => 
+        .AddOpenIdConnect("AADandMicrosoft", "AAD Login", options =>
         {
             //  https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration
             options.ClientId = aadApp["ClientId"];
@@ -132,14 +131,14 @@ internal static class HostingExtensions
 
         return builder.Build();
     }
-    
+
     public static WebApplication ConfigurePipeline(this WebApplication app, IWebHostEnvironment env)
     {
         app.UseSecurityHeaders(
             SecurityHeadersDefinitions.GetHeaderPolicyCollection(env.IsDevelopment()));
 
         app.UseSerilogRequestLogging();
-    
+
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -152,7 +151,7 @@ internal static class HostingExtensions
 
         app.UseIdentityServer();
         app.UseAuthorization();
-        
+
         app.MapRazorPages().RequireAuthorization();
 
         app.MapControllers();

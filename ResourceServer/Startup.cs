@@ -1,10 +1,10 @@
-using ResourceServer.Model;
-using ResourceServer.Repositories;
+using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using IdentityServer4.AccessTokenValidation;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ResourceServer.Model;
+using ResourceServer.Repositories;
 
 namespace ResourceServer;
 
