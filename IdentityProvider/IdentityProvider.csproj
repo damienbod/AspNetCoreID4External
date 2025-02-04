@@ -6,7 +6,6 @@
     <UserSecretsId>5706599a-cec4-4184-950e-2b3850c191b3</UserSecretsId>
   </PropertyGroup>
 
-
   <PropertyGroup>
     <DefaultItemExcludes>$(DefaultItemExcludes);wwwroot\css\site.min.css;wwwroot\css\vendor.min.css;wwwroot\js\site.min.js;wwwroot\js\vendor-validation.min.js;wwwroot\js\vendor.min.js</DefaultItemExcludes>
   </PropertyGroup>
@@ -19,8 +18,8 @@
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.7.0" />
     <PackageReference Include="Sendgrid" Version="9.29.3" />
     <PackageReference Include="Fido2" Version="3.0.1" />
-    <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="0.24.0" />
-    <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders.TagHelpers" Version="0.24.0" />
+    <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="1.0.0-preview.3" />
+    <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders.TagHelpers" Version="1.0.0-preview.3" />
     <PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="7.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
