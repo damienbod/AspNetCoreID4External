@@ -1,25 +1,31 @@
+
 using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
+using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using ResourceServer.Model;
 using ResourceServer.Repositories;
 
 namespace ResourceServer;
 
-public class Startup
+internal static class HostingExtensions
 {
-    public Startup(IConfiguration configuration)
+    public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
-        Configuration = configuration;
-    }
+        var services = builder.Services;
+        var configuration = builder.Configuration;
 
-    public IConfiguration Configuration { get; }
+        builder.Services.AddSecurityHeaderPolicies()
+            .SetPolicySelector((PolicySelectorContext ctx) =>
+            {
+                return SecurityHeadersDefinitions.GetHeaderPolicyCollection(true);
+            });
 
-    public void ConfigureServices(IServiceCollection services)
-    {
-        var connection = Configuration.GetConnectionString("DefaultConnection");
+
+        var connection = configuration.GetConnectionString("DefaultConnection");
 
         services.AddDbContext<DataEventRecordContext>(options =>
             options.UseSqlite(connection)
@@ -105,12 +111,13 @@ public class Startup
         });
 
         services.AddScoped<IDataEventRecordRepository, DataEventRecordRepository>();
+
+        return builder.Build();
     }
 
-    public void Configure(IApplicationBuilder app)
+    public static WebApplication ConfigurePipeline(this WebApplication app, IWebHostEnvironment env)
     {
-        app.UseSecurityHeaders(
-            SecurityHeadersDefinitions.GetHeaderPolicyCollection(true));
+        app.UseSecurityHeaders();
 
         app.UseExceptionHandler("/Home/Error");
         app.UseCors("AllowAllOrigins");
@@ -121,15 +128,16 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
+        app.MapControllers();
 
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "Docs API");
         });
+
+
+
+        return app;
     }
 }

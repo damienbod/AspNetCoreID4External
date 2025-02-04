@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
 using System.Security.Cryptography.X509Certificates;
 
@@ -19,11 +20,18 @@ internal static class HostingExtensions
     {
         var services = builder.Services;
         var configuration = builder.Configuration;
-        var environment = builder.Environment;
+
+        builder.Services.AddSecurityHeaderPolicies()
+           .SetPolicySelector((PolicySelectorContext ctx) =>
+           {
+               return SecurityHeadersDefinitions.GetHeaderPolicyCollection(true);
+           });
+
+
 
         builder.Services.AddRazorPages();
 
-        var x509Certificate2Certs = GetCertificates(environment, configuration)
+        var x509Certificate2Certs = GetCertificates(builder.Environment, configuration)
           .GetAwaiter().GetResult();
 
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -134,8 +142,7 @@ internal static class HostingExtensions
 
     public static WebApplication ConfigurePipeline(this WebApplication app, IWebHostEnvironment env)
     {
-        app.UseSecurityHeaders(
-            SecurityHeadersDefinitions.GetHeaderPolicyCollection(env.IsDevelopment()));
+        app.UseSecurityHeaders();
 
         app.UseSerilogRequestLogging();
 
