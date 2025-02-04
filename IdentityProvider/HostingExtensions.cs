@@ -146,7 +146,7 @@ internal static class HostingExtensions
 
         app.UseCors("AllowAllOrigins");
 
-        app.UseStaticFiles();
+        app.MapStaticAssets();
         app.UseRouting();
 
         app.UseIdentityServer();
