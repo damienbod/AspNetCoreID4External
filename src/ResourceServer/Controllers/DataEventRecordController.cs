@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ResourceServer.Model;
@@ -5,7 +6,8 @@ using ResourceServer.Repositories;
 
 namespace ResourceServer.Controllers;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+[ApiController]
 [Route("api/[controller]")]
 public class DataEventRecordsController : Controller
 {
