@@ -95,7 +95,7 @@ internal static class HostingExtensions
             .AddMicrosoftGraph()
             .AddDistributedTokenCaches();
 
-        ECDsaSecurityKey eCDsaSecurityKey = new(ActiveCertificate.GetECDsaPrivateKey());
+        ECDsaSecurityKey eCDsaSecurityKey = new(ActiveCertificate!.GetECDsaPrivateKey());
 
         services.AddIdentityServer(options =>
         {
@@ -157,13 +157,13 @@ internal static class HostingExtensions
         return app;
     }
 
-    private static async Task<(X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate)> GetCertificates(IWebHostEnvironment environment, IConfiguration configuration)
+    private static async Task<(X509Certificate2? ActiveCertificate, X509Certificate2? SecondaryCertificate)> GetCertificates(IWebHostEnvironment environment, IConfiguration configuration)
     {
         var certificateConfiguration = new CertificateConfiguration
         {
             // Use an Azure key vault
-            CertificateNameKeyVault = configuration["CertificateNameKeyVault"], //"StsCert",
-            KeyVaultEndpoint = configuration["AzureKeyVaultEndpoint"], // "https://damienbod.vault.azure.net"
+            CertificateNameKeyVault = configuration["CertificateNameKeyVault"]!, //"StsCert",
+            KeyVaultEndpoint = configuration["AzureKeyVaultEndpoint"]!, // "https://damienbod.vault.azure.net"
 
             // Use a local store with thumbprint
             //UseLocalCertStore = Convert.ToBoolean(configuration["UseLocalCertStore"]),
@@ -174,8 +174,8 @@ internal static class HostingExtensions
             DevelopmentCertificatePassword = "1234" //configuration["DevelopmentCertificatePassword"] //"1234",
         };
 
-        (X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate) certs = await CertificateService.GetCertificates(
-            certificateConfiguration).ConfigureAwait(false);
+        (X509Certificate2? ActiveCertificate, X509Certificate2? SecondaryCertificate) certs 
+            = await CertificateService.GetCertificates(certificateConfiguration);
 
         return certs;
     }
