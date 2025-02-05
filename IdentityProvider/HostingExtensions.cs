@@ -5,7 +5,6 @@ using IdentityProvider.Services.Certificate;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
