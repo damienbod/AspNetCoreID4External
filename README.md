@@ -38,10 +38,6 @@ Update-Database
 
 ## Blogs
 
-### Old
-
-[Updating Microsoft Account Logins in ASP.NET Core with OpenID Connect and Azure Active Directory](https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-core-with-openid-connect-and-azure-active-directory/)
-
 ## History 
 
 - 2025-02-05 Updated identity provider
@@ -78,7 +74,12 @@ Update-Database
 - 2017-11-05 Updated to Angular 5 and Typescript 2.6.1
 - 2017-09-23 Updated to ASP.NET Core 2.0
 
-## Even older blogs
+## Old blogs
+
+[Updating Microsoft Account Logins in ASP.NET Core with OpenID Connect and Azure Active Directory](https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-core-with-openid-connect-and-azure-active-directory/)
+
+
+## Older blogs again
 
 ### Adding an external Microsoft login to IdentityServer4
 
