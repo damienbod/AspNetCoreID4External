@@ -135,7 +135,6 @@ internal static class HostingExtensions
                 options.SwaggerEndpoint("/openapi/v1/openapi.json", "v1");
             });
         }
-
         return app;
     }
 }
