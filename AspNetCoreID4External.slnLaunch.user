@@ -3,11 +3,11 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "IdentityProvider\\IdentityProvider.csproj",
+        "Path": "src\\IdentityProvider\\IdentityProvider.csproj",
         "Action": "Start"
       },
       {
-        "Path": "ResourceServer\\ResourceServer.csproj",
+        "Path": "src\\ResourceServer\\ResourceServer.csproj",
         "Action": "Start"
       }
     ]
