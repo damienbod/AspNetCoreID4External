@@ -19,7 +19,7 @@ public class IdentityWithAdditionalClaimsProfileService : ProfileService<Applica
     protected override async Task GetProfileDataAsync(ProfileDataRequestContext context, ApplicationUser user)
     {
         var principal = await GetUserClaimsAsync(user);
-        var id = (ClaimsIdentity)principal.Identity;
+        var id = (ClaimsIdentity)principal.Identity!;
         var sub = context.Subject.GetSubjectId();
 
         var claims = principal.Claims.ToList();
@@ -30,7 +30,7 @@ public class IdentityWithAdditionalClaimsProfileService : ProfileService<Applica
         claims.Add(new Claim(JwtClaimTypes.Role, "securedFiles.user"));
         claims.Add(new Claim(JwtClaimTypes.Role, "securedFiles"));
         claims.Add(new Claim(JwtClaimTypes.Scope, "securedFiles"));
-        claims.Add(new Claim(JwtClaimTypes.GivenName, user.UserName));
+        claims.Add(new Claim(JwtClaimTypes.GivenName, user.UserName!));
 
         if (user.IsAdmin)
         {
@@ -51,8 +51,8 @@ public class IdentityWithAdditionalClaimsProfileService : ProfileService<Applica
             claims.Add(new Claim(JwtClaimTypes.Role, "securedFiles.admin"));
         }
 
-        claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email));
-        claims.Add(new Claim("name", user.Email));
+        claims.Add(new Claim(IdentityServerConstants.StandardScopes.Email, user.Email!));
+        claims.Add(new Claim("name", user.Email!));
 
         context.AddRequestedClaims(claims);
     }

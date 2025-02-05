@@ -3,9 +3,9 @@
 public class CertificateConfiguration
 {
     public bool UseLocalCertStore { get; set; }
-    public string CertificateThumbprint { get; set; }
-    public string CertificateNameKeyVault { get; set; }
-    public string KeyVaultEndpoint { get; set; }
-    public string DevelopmentCertificatePfx { get; set; }
-    public string DevelopmentCertificatePassword { get; set; }
+    public string CertificateThumbprint { get; set; } = string.Empty;
+    public string CertificateNameKeyVault { get; set; } = string.Empty;
+    public string KeyVaultEndpoint { get; set; } = string.Empty;
+    public string DevelopmentCertificatePfx { get; set; } = string.Empty;
+    public string DevelopmentCertificatePassword { get; set; } = string.Empty;
 }

@@ -41,7 +41,7 @@ public class AdditionalUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<A
             claims.Add(new Claim(JwtClaimTypes.Role, "user"));
         }
 
-        identity.AddClaims(claims);
+        identity!.AddClaims(claims);
         return principal;
     }
 }

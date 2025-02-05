@@ -10,8 +10,8 @@ namespace IdentityProvider.Models;
 public class ApplicationUser : IdentityUser
 {
     public bool IsAdmin { get; set; }
-    public string DataEventRecordsRole { get; set; }
-    public string SecuredFilesRole { get; set; }
+    public string DataEventRecordsRole { get; set; } = string.Empty;
+    public string SecuredFilesRole { get; set; } = string.Empty;
 
     public string Photo { get; set; } = string.Empty;
     public Guid? EntraIdOid { get; set; }

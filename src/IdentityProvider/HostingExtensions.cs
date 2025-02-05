@@ -162,8 +162,8 @@ internal static class HostingExtensions
         var certificateConfiguration = new CertificateConfiguration
         {
             // Use an Azure key vault
-            CertificateNameKeyVault = configuration["CertificateNameKeyVault"], //"StsCert",
-            KeyVaultEndpoint = configuration["AzureKeyVaultEndpoint"], // "https://damienbod.vault.azure.net"
+            CertificateNameKeyVault = configuration["CertificateNameKeyVault"]!, //"StsCert",
+            KeyVaultEndpoint = configuration["AzureKeyVaultEndpoint"]!, // "https://damienbod.vault.azure.net"
 
             // Use a local store with thumbprint
             //UseLocalCertStore = Convert.ToBoolean(configuration["UseLocalCertStore"]),
