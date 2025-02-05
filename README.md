@@ -40,6 +40,7 @@ Update-Database
 
 ## History 
 
+- 2025-02-06 Angular 19
 - 2025-02-05 Updated identity provider, Updated API to use Open API
 - 2025-02-04 Updated packages, .NET 9
 - 2024-10-13 Updated packages
