@@ -26,6 +26,16 @@ builder.Services.AddAuthentication()
     .AddDistributedTokenCaches();
 ```
 
+## Migrations
+
+```
+Add-Migration "InitIdentityNew" -c ApplicationDbContext
+```
+
+```
+Update-Database
+```
+
 ## Blogs
 
 ### Old
