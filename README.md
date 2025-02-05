@@ -40,7 +40,7 @@ Update-Database
 
 ## History 
 
-- 2025-02-05 Updated identity provider
+- 2025-02-05 Updated identity provider, Updated API to use Open API
 - 2025-02-04 Updated packages, .NET 9
 - 2024-10-13 Updated packages
 - 2023-03-12 Updated packages
@@ -77,7 +77,6 @@ Update-Database
 ## Old blogs
 
 [Updating Microsoft Account Logins in ASP.NET Core with OpenID Connect and Azure Active Directory](https://damienbod.com/2019/05/17/updating-microsoft-account-logins-in-asp-net-core-with-openid-connect-and-azure-active-directory/)
-
 
 ## Older blogs again
 
