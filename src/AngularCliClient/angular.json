@@ -65,21 +65,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-oidc-oauth2:build",
             "sslKey": "certs/dev_localhost.key",
             "sslCert": "certs/dev_localhost.pem",
-            "port": 4200
+            "port": 4200,
+            "buildTarget": "angular-oidc-oauth2:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "angular-oidc-oauth2:build:production"
+              "buildTarget": "angular-oidc-oauth2:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "angular-oidc-oauth2:build"
+            "buildTarget": "angular-oidc-oauth2:build"
           }
         },
         "test": {
