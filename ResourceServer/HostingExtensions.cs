@@ -1,13 +1,14 @@
 
-using IdentityServer4.AccessTokenValidation;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using ResourceServer.Model;
 using ResourceServer.Repositories;
+using WebApiDuende;
 
 namespace ResourceServer;
 
@@ -18,12 +19,33 @@ internal static class HostingExtensions
         var services = builder.Services;
         var configuration = builder.Configuration;
 
+        // Open up security restrictions to allow this to work
+        // Not recommended in production
+        var deploySwaggerUI = builder.Configuration.GetValue<bool>("DeploySwaggerUI");
+        var isDev = builder.Environment.IsDevelopment();
+
         builder.Services.AddSecurityHeaderPolicies()
             .SetPolicySelector((PolicySelectorContext ctx) =>
             {
-                return SecurityHeadersDefinitions.GetHeaderPolicyCollection(true);
-            });
+                // sum is weak security headers due to Swagger UI deployment
+                // should only use in development
+                if (deploySwaggerUI)
+                {
+                    // Weakened security headers for Swagger UI
+                    if (ctx.HttpContext.Request.Path.StartsWithSegments("/swagger"))
+                    {
+                        return SecurityHeadersDefinitionsSwagger.GetHeaderPolicyCollection(isDev);
+                    }
 
+                    // Strict security headers
+                    return SecurityHeadersDefinitionsAPI.GetHeaderPolicyCollection(isDev);
+                }
+                // Strict security headers for production
+                else
+                {
+                    return SecurityHeadersDefinitionsAPI.GetHeaderPolicyCollection(isDev);
+                }
+            });
 
         var connection = configuration.GetConnectionString("DefaultConnection");
 
@@ -50,13 +72,30 @@ internal static class HostingExtensions
             .RequireClaim("scope", "dataEventRecords")
             .Build();
 
-        services.AddAuthentication(IdentityServerAuthenticationDefaults.AuthenticationScheme)
-          .AddIdentityServerAuthentication(options =>
-          {
-              options.Authority = "https://localhost:44337";
-              options.ApiName = "dataEventRecordsApi";
-              options.ApiSecret = "dataEventRecordsSecret";
-          });
+        builder.Services.AddAuthentication()
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                var oauthConfig = builder.Configuration.GetSection("ProfileApiConfigurations");
+                options.Authority = oauthConfig["Authority"];
+                options.Audience = oauthConfig["Audience"];
+                options.MapInboundClaims = false;
+                options.TokenValidationParameters.ValidTypes = ["at+jwt"];
+            });
+
+        builder.Services.AddOpenApi(options =>
+        {
+            //options.UseTransformer((document, context, cancellationToken) =>
+            //{
+            //    document.Info = new()
+            //    {
+            //        Title = "My API",
+            //        Version = "v1",
+            //        Description = "API for Damien"
+            //    };
+            //    return Task.CompletedTask;
+            //});
+            options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
+        });
 
         services.AddAuthorization(options =>
         {
@@ -70,74 +109,66 @@ internal static class HostingExtensions
             });
         });
 
-        services.AddControllers()
-          .AddNewtonsoftJson();
-
-        services.AddSwaggerGen(c =>
-        {
-            // add JWT Authentication
-            var securityScheme = new OpenApiSecurityScheme
-            {
-                Name = "JWT Authentication",
-                Description = "Enter JWT Bearer token **_only_**",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer", // must be lower case
-                BearerFormat = "JWT",
-                Reference = new OpenApiReference
-                {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
-                }
-            };
-            c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {securityScheme, Array.Empty<string>()}
-            });
-
-            c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "An API ",
-                Version = "v1",
-                Description = "An API",
-                Contact = new OpenApiContact
-                {
-                    Name = "damienbod",
-                    Email = string.Empty,
-                    Url = new Uri("https://damienbod.com/"),
-                },
-            });
-        });
+        services.AddControllers();
 
         services.AddScoped<IDataEventRecordRepository, DataEventRecordRepository>();
 
         return builder.Build();
     }
 
-    public static WebApplication ConfigurePipeline(this WebApplication app, IWebHostEnvironment env)
+    public static WebApplication ConfigurePipeline(this WebApplication app)
     {
+        var deploySwaggerUI = app.Configuration.GetValue<bool>("DeploySwaggerUI");
+        app.UseCors("AllowAllOrigins");
+
         app.UseSecurityHeaders();
 
-        app.UseExceptionHandler("/Home/Error");
-        app.UseCors("AllowAllOrigins");
-        app.UseStaticFiles();
-
-        app.UseRouting();
-
-        app.UseAuthentication();
+        app.UseHttpsRedirection();
         app.UseAuthorization();
 
         app.MapControllers();
 
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
+        //app.MapOpenApi(); // /openapi/v1.json
+        app.MapOpenApi("/openapi/v1/openapi.json");
+        //app.MapOpenApi("/openapi/{documentName}/openapi.json");
+
+        if (deploySwaggerUI)
         {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "Docs API");
-        });
-
-
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/openapi/v1/openapi.json", "v1");
+            });
+        }
 
         return app;
+    }
+
+    internal sealed class BearerSecuritySchemeTransformer(IAuthenticationSchemeProvider authenticationSchemeProvider) : IOpenApiDocumentTransformer
+    {
+        public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+        {
+            var authenticationSchemes = await authenticationSchemeProvider.GetAllSchemesAsync();
+            if (authenticationSchemes.Any(authScheme => authScheme.Name == "Bearer"))
+            {
+                var requirements = new Dictionary<string, OpenApiSecurityScheme>
+                {
+                    ["Bearer"] = new OpenApiSecurityScheme
+                    {
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer", // "bearer" refers to the header name here
+                        In = ParameterLocation.Header,
+                        BearerFormat = "Json Web Token"
+                    }
+                };
+                document.Components ??= new OpenApiComponents();
+                document.Components.SecuritySchemes = requirements;
+            }
+            document.Info = new()
+            {
+                Title = "Duende API Bearer scheme",
+                Version = "v1",
+                Description = "Duende API"
+            };
+        }
     }
 }
