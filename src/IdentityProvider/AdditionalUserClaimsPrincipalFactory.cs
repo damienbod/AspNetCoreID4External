@@ -19,7 +19,7 @@ public class AdditionalUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<A
     public async override Task<ClaimsPrincipal> CreateAsync(ApplicationUser user)
     {
         var principal = await base.CreateAsync(user);
-        var identity = (ClaimsIdentity)principal.Identity;
+        ClaimsIdentity identity = (ClaimsIdentity)principal.Identity!;
 
         var claims = new List<Claim>
         {
@@ -41,7 +41,7 @@ public class AdditionalUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<A
             claims.Add(new Claim(JwtClaimTypes.Role, "user"));
         }
 
-        identity!.AddClaims(claims);
+        identity.AddClaims(claims);
         return principal;
     }
 }
