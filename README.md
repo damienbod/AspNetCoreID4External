@@ -1,37 +1,29 @@
 
 [![.NET](https://github.com/damienbod/AspNetCoreID4External/actions/workflows/dotnet.yml/badge.svg)](https://github.com/damienbod/AspNetCoreID4External/actions/workflows/dotnet.yml)
 
-## OIDC setup for external IDP
+## OIDC setup for external IDP (using Microsoft.Identity.Web)
 
 ```csharp
-var aadApp = configuration.GetSection("AadApp");
-services.AddOidcStateDataFormatterCache("AADandMicrosoft");
+builder.Services.AddDistributedMemoryCache();
 
-services.AddAuthentication(options => // Application
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-})
-.AddOpenIdConnect("AADandMicrosoft", "AAD Login", options => 
-{
-    //  https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration
-    options.ClientId = aadApp["ClientId"];
-    options.ClientSecret = aadApp["ClientSecret"];
-    options.Authority = aadApp["AuthorityUrl"];
-
-    options.SignInScheme = "Identity.External";
-    options.RemoteAuthenticationTimeout = TimeSpan.FromSeconds(20);
-    options.ResponseType = "code";
-    options.Scope.Add("profile");
-    options.Scope.Add("email");
-    options.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication()
+    .AddMicrosoftIdentityWebApp(options =>
     {
-        ValidateIssuer = false, // multi tenant => means all tenants can use this
-        NameClaimType = "email",
-    };
-    options.CallbackPath = "/signin-oidc";
-    options.Prompt = "select_account"; // login, consent select_account
-});
+        builder.Configuration.Bind("AzureAd", options);
+        options.SignInScheme = "entraidcookie";
+        options.UsePkce = true;
+        options.Events = new OpenIdConnectEvents
+        {
+            OnTokenResponseReceived = context =>
+            {
+                var idToken = context.TokenEndpointResponse.IdToken;
+                return Task.CompletedTask;
+            }
+        };
+    }, copt => { }, "EntraID", "entraidcookie", false, "Entra ID")
+    .EnableTokenAcquisitionToCallDownstreamApi(["User.Read"])
+    .AddMicrosoftGraph()
+    .AddDistributedTokenCaches();
 ```
 
 ## Blogs
@@ -42,6 +34,7 @@ services.AddAuthentication(options => // Application
 
 ## History 
 
+- 2025-02-05 Updated identity provider
 - 2025-02-04 Updated packages, .NET 9
 - 2024-10-13 Updated packages
 - 2023-03-12 Updated packages
