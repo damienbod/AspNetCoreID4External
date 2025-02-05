@@ -11,5 +11,5 @@ public class DataEventRecord
     [JsonPropertyName("description")]
     public string? Description { get; set; }
     [JsonPropertyName("timestamp")]
-    public DateTime Timestamp { get; set; }
+    public string? Timestamp { get; set; }
 }

@@ -32,21 +32,21 @@ public class IdentityWithAdditionalClaimsProfileService : ProfileService<Applica
         claims.Add(new Claim(JwtClaimTypes.Scope, "securedFiles"));
         claims.Add(new Claim(JwtClaimTypes.GivenName, user.UserName!));
 
-        if (user.IsAdmin)
+        //if (user.IsAdmin)
         {
             claims.Add(new Claim(JwtClaimTypes.Role, "admin"));
         }
-        else
-        {
-            claims.Add(new Claim(JwtClaimTypes.Role, "user"));
-        }
+        //else
+        //{
+        //    claims.Add(new Claim(JwtClaimTypes.Role, "user"));
+        //}
 
-        if (user.DataEventRecordsRole == "dataEventRecords.admin")
+        //if (user.DataEventRecordsRole == "dataEventRecords.admin")
         {
             claims.Add(new Claim(JwtClaimTypes.Role, "dataEventRecords.admin"));
         }
 
-        if (user.SecuredFilesRole == "securedFiles.admin")
+        //if (user.SecuredFilesRole == "securedFiles.admin")
         {
             claims.Add(new Claim(JwtClaimTypes.Role, "securedFiles.admin"));
         }
