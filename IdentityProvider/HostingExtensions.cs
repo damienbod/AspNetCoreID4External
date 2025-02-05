@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
@@ -21,6 +22,9 @@ internal static class HostingExtensions
     {
         var services = builder.Services;
         var configuration = builder.Configuration;
+
+        builder.Services.AddRazorPages();
+        builder.Services.AddScoped<MsGraphDelegatedService>();
 
         builder.Services.AddSecurityHeaderPolicies()
          .SetPolicySelector((PolicySelectorContext ctx) =>
@@ -38,9 +42,7 @@ internal static class HostingExtensions
                  builder.Configuration["AzureAd:Instance"]);
          });
 
-        builder.Services.AddRazorPages();
-
-        var x509Certificate2Certs = GetCertificates(builder.Environment, configuration)
+        var (ActiveCertificate, SecondaryCertificate) = GetCertificates(builder.Environment, configuration)
           .GetAwaiter().GetResult();
 
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -62,8 +64,9 @@ internal static class HostingExtensions
                 });
         });
 
-        services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-        services.AddTransient<IEmailSender, EmailSender>();
+        // Add this if you need to add email support
+        //services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+        //services.AddTransient<IEmailSender, EmailSender>();
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -71,16 +74,6 @@ internal static class HostingExtensions
 
         services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
            AdditionalUserClaimsPrincipalFactory>();
-
-        // Adds a default in-memory implementation of IDistributedCache.
-        services.AddDistributedMemoryCache();
-        services.AddSession(options =>
-        {
-            options.IdleTimeout = TimeSpan.FromMinutes(2);
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SameSite = SameSiteMode.None;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        });
 
         builder.Services.AddDistributedMemoryCache();
 
@@ -103,7 +96,7 @@ internal static class HostingExtensions
             .AddMicrosoftGraph()
             .AddDistributedTokenCaches();
 
-        ECDsaSecurityKey eCDsaSecurityKey = new(x509Certificate2Certs.ActiveCertificate.GetECDsaPrivateKey());
+        ECDsaSecurityKey eCDsaSecurityKey = new(ActiveCertificate.GetECDsaPrivateKey());
 
         services.AddIdentityServer(options =>
         {
@@ -143,6 +136,8 @@ internal static class HostingExtensions
     {
         app.UseSecurityHeaders();
 
+        IdentityModelEventSource.ShowPII = true;
+
         app.UseSerilogRequestLogging();
 
         if (app.Environment.IsDevelopment())
@@ -154,15 +149,11 @@ internal static class HostingExtensions
 
         app.MapStaticAssets();
         app.UseRouting();
-
         app.UseIdentityServer();
         app.UseAuthorization();
 
         app.MapRazorPages().RequireAuthorization();
-
         app.MapControllers();
-
-        app.UseSession();
 
         return app;
     }
