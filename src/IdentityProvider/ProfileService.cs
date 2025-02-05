@@ -77,11 +77,11 @@ public class ProfileService : IProfileService
         }
 
         email = claims.FirstOrDefault(t => t.Type == "preferred_username");
-        
+
         if (email != null)
         {
             var isNameAndEmail = IsEmailValid(email.Value);
-            if(isNameAndEmail)
+            if (isNameAndEmail)
             {
                 return email.Value;
             }

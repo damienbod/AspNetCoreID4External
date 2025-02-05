@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityProvider", "IdentityProvider\IdentityProvider.csproj", "{733EB02E-EDAA-444D-A2B3-A305C77E1710}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceServer", "ResourceServer\ResourceServer.csproj", "{EEF37A6C-D96B-4F92-96E4-EA08BFCF92B9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5EBBC7DC-0860-4015-B99B-0F713C71E926}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{733EB02E-EDAA-444D-A2B3-A305C77E1710}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{733EB02E-EDAA-444D-A2B3-A305C77E1710}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{733EB02E-EDAA-444D-A2B3-A305C77E1710}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{733EB02E-EDAA-444D-A2B3-A305C77E1710}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEF37A6C-D96B-4F92-96E4-EA08BFCF92B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEF37A6C-D96B-4F92-96E4-EA08BFCF92B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEF37A6C-D96B-4F92-96E4-EA08BFCF92B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEF37A6C-D96B-4F92-96E4-EA08BFCF92B9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

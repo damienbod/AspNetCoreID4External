@@ -4,3 +4,5 @@
 .vs
 /AngularCliClient/.angular/cache
 /IdentityProvider/node_modules
+/ResourceServer/ResourceServer.csproj.user
+/LogFiles/**
