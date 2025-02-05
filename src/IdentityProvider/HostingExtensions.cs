@@ -5,6 +5,7 @@ using IdentityProvider.Services.Certificate;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.IdentityModel.Logging;
@@ -64,8 +65,8 @@ internal static class HostingExtensions
         });
 
         // Add this if you need to add email support
-        //services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-        //services.AddTransient<IEmailSender, EmailSender>();
+        services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+        services.AddTransient<IEmailSender, EmailSender>();
 
         services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -103,8 +104,8 @@ internal static class HostingExtensions
             options.Events.RaiseInformationEvents = true;
             options.Events.RaiseFailureEvents = true;
             options.Events.RaiseSuccessEvents = true;
-            options.UserInteraction.LoginUrl = "/Identity/Account/Login";
-            options.UserInteraction.LogoutUrl = "/Identity/Account/Logout";
+            //options.UserInteraction.LoginUrl = "/Identity/Account/Login";
+            //options.UserInteraction.LogoutUrl = "/Identity/Account/Logout";
 
             // see https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/
             options.EmitStaticAudienceClaim = true;
