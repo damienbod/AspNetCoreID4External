@@ -7,9 +7,9 @@ namespace IdentityProvider.Services.Certificate;
 
 public static class CertificateService
 {
-    public static async Task<(X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate)> GetCertificates(CertificateConfiguration certificateConfiguration)
+    public static async Task<(X509Certificate2? ActiveCertificate, X509Certificate2? SecondaryCertificate)> GetCertificates(CertificateConfiguration certificateConfiguration)
     {
-        (X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate) certs = (null, null);
+        (X509Certificate2? ActiveCertificate, X509Certificate2? SecondaryCertificate) certs = (null, null);
 
         if (certificateConfiguration.UseLocalCertStore)
         {
@@ -36,14 +36,14 @@ public static class CertificateService
                     vaultUri: new Uri(certificateConfiguration.KeyVaultEndpoint),
                     credential);
 
-                certs = await keyVaultCertificateService.GetCertificatesFromKeyVault(secretClient, certificateClient).ConfigureAwait(false);
+                certs = await keyVaultCertificateService.GetCertificatesFromKeyVault(secretClient, certificateClient);
             }
         }
 
         // search for local PFX with password, usually local dev
         if (certs.ActiveCertificate == null)
         {
-            certs.ActiveCertificate = new X509Certificate2(
+            certs.ActiveCertificate = X509CertificateLoader.LoadPkcs12FromFile(
                 certificateConfiguration.DevelopmentCertificatePfx,
                 certificateConfiguration.DevelopmentCertificatePassword);
         }

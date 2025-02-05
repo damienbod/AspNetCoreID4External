@@ -20,10 +20,10 @@ public class KeyVaultCertificateService
         _certificateName = certificateName; // certificateName
     }
 
-    public async Task<(X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate)> GetCertificatesFromKeyVault(
+    public async Task<(X509Certificate2? ActiveCertificate, X509Certificate2? SecondaryCertificate)> GetCertificatesFromKeyVault(
         SecretClient secretClient, CertificateClient certificateClient)
     {
-        (X509Certificate2 ActiveCertificate, X509Certificate2 SecondaryCertificate) certs = (null, null);
+        (X509Certificate2? ActiveCertificate, X509Certificate2? SecondaryCertificate) certs = (null, null);
 
         var certificateItems = GetAllEnabledCertificateVersions(certificateClient);
         var item = certificateItems.FirstOrDefault();
@@ -66,11 +66,10 @@ public class KeyVaultCertificateService
 
         var privateKeyBytes = Convert.FromBase64String(secret.Value);
 
-        var certificateWithPrivateKey = new X509Certificate2(privateKeyBytes,
-            (string)null,
+        var certificateWithPrivateKey = X509CertificateLoader.LoadPkcs12(privateKeyBytes,
+            null,
             X509KeyStorageFlags.MachineKeySet);
 
         return certificateWithPrivateKey;
     }
-
 }
