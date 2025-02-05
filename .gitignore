@@ -6,3 +6,4 @@
 /IdentityProvider/node_modules
 /ResourceServer/ResourceServer.csproj.user
 /LogFiles/**
+/src/AngularCliClient/.angular/**
