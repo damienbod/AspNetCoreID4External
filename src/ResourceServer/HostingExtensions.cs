@@ -165,9 +165,9 @@ internal static class HostingExtensions
             }
             document.Info = new()
             {
-                Title = "Duende API Bearer scheme",
+                Title = "ResourceServer API Bearer scheme",
                 Version = "v1",
-                Description = "Duende API"
+                Description = "ResourceServer API"
             };
         }
     }

@@ -18,6 +18,9 @@ public class DataEventRecordsController : Controller
         _dataEventRecordRepository = dataEventRecordRepository;
     }
 
+    [EndpointSummary("This is a summary from OpenApi attributes.")]
+    [EndpointDescription("This is a description from OpenApi attributes.")]
+    [Produces(typeof(List<DataEventRecord>))]
     [Authorize("dataEventRecordsUser")]
     [HttpGet]
     public IActionResult Get()
