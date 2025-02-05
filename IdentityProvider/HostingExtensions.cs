@@ -27,8 +27,6 @@ internal static class HostingExtensions
                return SecurityHeadersDefinitions.GetHeaderPolicyCollection(true);
            });
 
-
-
         builder.Services.AddRazorPages();
 
         var x509Certificate2Certs = GetCertificates(builder.Environment, configuration)
