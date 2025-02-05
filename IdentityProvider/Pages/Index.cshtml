@@ -1,14 +1,24 @@
 @page
-@model IdentityServerHost.Pages.Home.Index
+@using Microsoft.AspNetCore.Identity
+@using IdentityProvider.Models
+@model IdentityProvider.Pages.Home.Index
+@inject SignInManager<ApplicationUser> SignInManager
 
 <div class="welcome-page">
     <h1>
-        <img src="~/duende-logo.svg" class="logo">
-        Welcome to Duende IdentityServer
+        Duende IdentityServer
         <small class="text-muted">(version @Model.Version)</small>
     </h1>
 
+    <hr>
+
     <ul>
+        @if (SignInManager.IsSignedIn(User) && Model.Photo.Length > 0)
+        {
+            <li>
+                <img width="200" src="data:image;base64,@System.Convert.ToBase64String(Model.Photo!)"/>
+            </li>
+        }
         <li>
             IdentityServer publishes a
             <a href="~/.well-known/openid-configuration">discovery document</a>
@@ -21,6 +31,9 @@
             Click <a href="~/grants">here</a> to manage your stored grants.
         </li>
         <li>
+            Click <a href="~/serversidesessions">here</a> to view the server side sessions.
+        </li>
+        <li>
             Click <a href="~/ciba/all">here</a> to view your pending CIBA login requests.
         </li>
         <li>
@@ -29,4 +42,15 @@
             and <a href="https://github.com/duendesoftware/samples">ready to use samples</a>.
         </li>
     </ul>
+
+    @if(Model.License != null)
+    {
+        <h2>License</h2>
+        <dl>
+            <dt>Serial Number</dt>
+            <dd>@Model.License.SerialNumber</dd>
+            <dt>Expiration</dt>
+            <dd>@Model.License.Expiration!.Value.ToLongDateString()</dd>
+        </dl>
+    }
 </div>

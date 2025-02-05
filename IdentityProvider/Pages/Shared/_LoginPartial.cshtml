@@ -1,30 +1,37 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@using IdentityServerHost.Models
-
+@using IdentityProvider.Models
+@using Microsoft.IdentityModel.Tokens
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@{
+    var user = await UserManager.GetUserAsync(User); 
+}
 
-<ul class="navbar-nav mr-auto">
+<ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a id="manage" class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+        <a id="manage" class="nav-link" asp-page="/Account/Manage/Index" title="Manage">
+            @if (user != null && !string.IsNullOrEmpty(user.Photo))
+            {
+                <img class="rounded-circle me-1" height="24" src="data:image;base64,@System.Convert.ToBase64String(Base64UrlEncoder.DecodeBytes(user!.Photo))" />
+            }
+            
+            @UserManager.GetUserName(User)</a>
     </li>
     <li class="nav-item">
-            <a class="nav-link" id="login" asp-area="Identity" href="~/Identity/Account/Logout">Logout</a>
-
-           @* <form id="logoutForm" class="form-inline" href="/Account/Logout/Index" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
+        <form id="logoutForm" class="form-inline" asp-page="/Account/Logout/Index" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
             <button id="logout" type="submit" class="nav-link btn btn-link">Logout</button>
-        </form>*@
+        </form>
     </li>
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        <a class="nav-link" id="register" asp-page="/Account/Register">Register</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a class="nav-link" id="login" asp-page="/Account/Login/Index">Login</a>
     </li>
 }
 </ul>

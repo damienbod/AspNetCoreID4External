@@ -1,5 +1,5 @@
 @page
-@model IdentityServerHost.Pages.Redirect.IndexModel
+@model IdentityProvider.Pages.Redirect.IndexModel
 @{
 }
 
@@ -11,4 +11,4 @@
 </div>
 
 <meta http-equiv="refresh" content="0;url=@Model.RedirectUri" data-url="@Model.RedirectUri">
-<script src="~/js/signin-redirect.js"></script>
+<script asp-add-nonce src="~/js/signin-redirect.js"></script>

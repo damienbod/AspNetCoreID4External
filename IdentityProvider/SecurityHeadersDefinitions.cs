@@ -2,32 +2,38 @@
 
 public static class SecurityHeadersDefinitions
 {
-    public static HeaderPolicyCollection GetHeaderPolicyCollection(bool isDev)
+    private static HeaderPolicyCollection? policy;
+
+    public static HeaderPolicyCollection GetHeaderPolicyCollection(bool isDev, string? idpHost)
     {
-        var policy = new HeaderPolicyCollection()
+        ArgumentNullException.ThrowIfNull(idpHost);
+
+        // Avoid building a new HeaderPolicyCollection on every request for performance reasons.
+        // Where possible, cache and reuse HeaderPolicyCollection instances.
+        if (policy != null) return policy;
+
+        policy = new HeaderPolicyCollection()
             .AddFrameOptionsDeny()
             .AddContentTypeOptionsNoSniff()
             .AddReferrerPolicyStrictOriginWhenCrossOrigin()
             .AddCrossOriginOpenerPolicy(builder => builder.SameOrigin())
-            .AddCrossOriginEmbedderPolicy(builder => builder.RequireCorp())
             .AddCrossOriginResourcePolicy(builder => builder.SameOrigin())
+            .AddCrossOriginEmbedderPolicy(builder => builder.RequireCorp()) // remove for dev if using hot reload
             .AddContentSecurityPolicy(builder =>
             {
                 builder.AddObjectSrc().None();
                 builder.AddBlockAllMixedContent();
                 builder.AddImgSrc().Self().From("data:");
+                builder.AddFormAction()
+                    .Self()
+                    .From(idpHost);
                 builder.AddFontSrc().Self();
-                builder.AddStyleSrc().Self().UnsafeInline();
                 builder.AddBaseUri().Self();
-                builder.AddScriptSrc().Self().UnsafeInline(); //.WithNonce();
-                builder.AddFrameAncestors().Self();
+                builder.AddFrameAncestors().None();
 
-                // removed this for demos add this back with explicit redirects for prod
-                // builder.AddFormAction().Self();
-
-                // builder.AddCustomDirective("require-trusted-types-for", "'script'");
+                builder.AddStyleSrc().Self().UnsafeInline();
+                builder.AddScriptSrc().WithNonce().UnsafeInline();
             })
-            .RemoveServerHeader()
             .RemoveServerHeader()
             .AddPermissionsPolicyWithDefaultSecureDirectives();
 
