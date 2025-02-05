@@ -5,37 +5,34 @@ namespace IdentityProvider;
 public static class Config
 {
     public static IEnumerable<IdentityResource> IdentityResources =>
-        new IdentityResource[]
-        {
+        [
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
             new IdentityResources.Email(),
-        };
+        ];
 
     public static IEnumerable<ApiScope> ApiScopes =>
-        new ApiScope[]
-        {
+        [
             new ApiScope("dataEventRecords", "Scope for the dataEventRecords")
-        };
+        ];
 
     public static IEnumerable<ApiResource> ApiResources =>
-        new ApiResource[]
-        {
+        [
             new ApiResource("dataEventRecordsApi")
             {
                 ApiSecrets = { new Secret("dataEventRecordsSecret".Sha256()) },
                 Scopes = { "dataEventRecords" },
                 UserClaims = { "role", "admin", "user", "dataEventRecords", "dataEventRecords.admin", "dataEventRecords.user" }
             }
-        };
+        ];
 
-    public static IEnumerable<Client> Clients => new Client[]
-    {
+    public static IEnumerable<Client> Clients =>
+    [
         new Client
             {
                 ClientName = "angularclient",
                 ClientId = "angularclient",
-                AccessTokenType = AccessTokenType.Reference,
+                AccessTokenType = AccessTokenType.Jwt,
                 AccessTokenLifetime = 330,// 120 seconds, default 60 minutes
                 IdentityTokenLifetime = 300,
 
@@ -47,28 +44,28 @@ public static class Config
                 RefreshTokenUsage = TokenUsage.OneTimeOnly,
 
                 AllowAccessTokensViaBrowser = true,
-                RedirectUris = new List<string>
-                {
+                RedirectUris =
+                [
                     "https://localhost:4200"
 
-                },
-                PostLogoutRedirectUris = new List<string>
-                {
+                ],
+                PostLogoutRedirectUris =
+                [
                     "https://localhost:4200",
                     "https://localhost:4200/unauthorized"
-                },
-                AllowedCorsOrigins = new List<string>
-                {
+                ],
+                AllowedCorsOrigins =
+                [
                     "https://localhost:4200"
-                },
-                AllowedScopes = new List<string>
-                {
+                ],
+                AllowedScopes =
+                [
                     "openid",
                     "dataEventRecords",
                     "role",
                     "profile",
                     "email"
-                }
+                ]
             }
-    };
+    ];
 }
