@@ -4,7 +4,7 @@
 
 using Microsoft.AspNetCore.Identity;
 
-namespace IdentityServerHost.Models;
+namespace IdentityProvider.Models;
 
 // Add profile data for application users by adding properties to the ApplicationUser class
 public class ApplicationUser : IdentityUser
@@ -12,4 +12,8 @@ public class ApplicationUser : IdentityUser
     public bool IsAdmin { get; set; }
     public string DataEventRecordsRole { get; set; }
     public string SecuredFilesRole { get; set; }
+
+    public string Photo { get; set; } = string.Empty;
+    public Guid? EntraIdOid { get; set; }
+    public Guid? TenantId { get; set; }
 }

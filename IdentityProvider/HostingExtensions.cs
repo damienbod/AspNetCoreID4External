@@ -1,15 +1,17 @@
-using Fido2NetLib;
 using IdentityProvider.Data;
+using IdentityProvider.Models;
+using IdentityProvider.Services;
 using IdentityProvider.Services.Certificate;
-using IdentityServerHost.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
-using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
 
 namespace IdentityProvider;
@@ -20,11 +22,27 @@ internal static class HostingExtensions
     {
         var services = builder.Services;
         var configuration = builder.Configuration;
-        var environment = builder.Environment;
 
         builder.Services.AddRazorPages();
+        builder.Services.AddScoped<MsGraphDelegatedService>();
 
-        var x509Certificate2Certs = GetCertificates(environment, configuration)
+        builder.Services.AddSecurityHeaderPolicies()
+         .SetPolicySelector((PolicySelectorContext ctx) =>
+         {
+             // Weakened security headers for IDP callback
+             if (ctx.HttpContext.Request.Path.StartsWithSegments("/connect"))
+             {
+                 return SecurityHeadersDefinitionsWeakened.GetHeaderPolicyCollection(
+                     builder.Environment.IsDevelopment(),
+                     builder.Configuration["AzureAd:Instance"]);
+             }
+
+             return SecurityHeadersDefinitions.GetHeaderPolicyCollection(
+                 builder.Environment.IsDevelopment(),
+                 builder.Configuration["AzureAd:Instance"]);
+         });
+
+        var (ActiveCertificate, SecondaryCertificate) = GetCertificates(builder.Environment, configuration)
           .GetAwaiter().GetResult();
 
         services.AddDbContext<ApplicationDbContext>(options =>
@@ -46,58 +64,39 @@ internal static class HostingExtensions
                 });
         });
 
-        services.AddIdentity<ApplicationUser, IdentityRole>()
-          .AddEntityFrameworkStores<ApplicationDbContext>()
-          .AddDefaultTokenProviders()
-          .AddDefaultUI()
-          .AddTokenProvider<Fido2UserTwoFactorTokenProvider>("FIDO2");
+        // Add this if you need to add email support
+        //services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+        //services.AddTransient<IEmailSender, EmailSender>();
 
-        services.Configure<Fido2Configuration>(builder.Configuration.GetSection("fido2"));
-        services.AddScoped<Fido2Store>();
+        services.AddIdentity<ApplicationUser, IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
         services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>,
            AdditionalUserClaimsPrincipalFactory>();
 
-        // Adds a default in-memory implementation of IDistributedCache.
-        services.AddDistributedMemoryCache();
-        services.AddSession(options =>
-        {
-            options.IdleTimeout = TimeSpan.FromMinutes(2);
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SameSite = SameSiteMode.None;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        });
+        builder.Services.AddDistributedMemoryCache();
 
-        var aadApp = configuration.GetSection("AadApp");
-        services.AddOidcStateDataFormatterCache("AADandMicrosoft");
-
-        services.AddAuthentication(options => // Application
-        {
-            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-        })
-        .AddOpenIdConnect("AADandMicrosoft", "AAD Login", options => 
-        {
-            //  https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration
-            options.ClientId = aadApp["ClientId"];
-            options.ClientSecret = aadApp["ClientSecret"];
-            options.Authority = aadApp["AuthorityUrl"];
-
-            options.SignInScheme = "Identity.External";
-            options.RemoteAuthenticationTimeout = TimeSpan.FromSeconds(20);
-            options.ResponseType = "code";
-            options.Scope.Add("profile");
-            options.Scope.Add("email");
-            options.TokenValidationParameters = new TokenValidationParameters
+        builder.Services.AddAuthentication()
+            .AddMicrosoftIdentityWebApp(options =>
             {
-                ValidateIssuer = false, // multi tenant => means all tenants can use this
-                NameClaimType = "email",
-            };
-            options.CallbackPath = "/signin-oidc";
-            options.Prompt = "select_account"; // login, consent select_account
-        });
+                builder.Configuration.Bind("AzureAd", options);
+                options.SignInScheme = "entraidcookie";
+                options.UsePkce = true;
+                options.Events = new OpenIdConnectEvents
+                {
+                    OnTokenResponseReceived = context =>
+                    {
+                        var idToken = context.TokenEndpointResponse.IdToken;
+                        return Task.CompletedTask;
+                    }
+                };
+            }, copt => { }, "EntraID", "entraidcookie", false, "Entra ID")
+            .EnableTokenAcquisitionToCallDownstreamApi(["User.Read"])
+            .AddMicrosoftGraph()
+            .AddDistributedTokenCaches();
 
-        ECDsaSecurityKey eCDsaSecurityKey = new(x509Certificate2Certs.ActiveCertificate.GetECDsaPrivateKey());
+        ECDsaSecurityKey eCDsaSecurityKey = new(ActiveCertificate.GetECDsaPrivateKey());
 
         services.AddIdentityServer(options =>
         {
@@ -132,14 +131,15 @@ internal static class HostingExtensions
 
         return builder.Build();
     }
-    
-    public static WebApplication ConfigurePipeline(this WebApplication app, IWebHostEnvironment env)
+
+    public static WebApplication ConfigurePipeline(this WebApplication app)
     {
-        app.UseSecurityHeaders(
-            SecurityHeadersDefinitions.GetHeaderPolicyCollection(env.IsDevelopment()));
+        app.UseSecurityHeaders();
+
+        IdentityModelEventSource.ShowPII = true;
 
         app.UseSerilogRequestLogging();
-    
+
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -147,17 +147,13 @@ internal static class HostingExtensions
 
         app.UseCors("AllowAllOrigins");
 
-        app.UseStaticFiles();
+        app.MapStaticAssets();
         app.UseRouting();
-
         app.UseIdentityServer();
         app.UseAuthorization();
-        
+
         app.MapRazorPages().RequireAuthorization();
-
         app.MapControllers();
-
-        app.UseSession();
 
         return app;
     }

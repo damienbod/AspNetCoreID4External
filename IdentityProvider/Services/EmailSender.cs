@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using IdentityProvider.Models;
 
 namespace IdentityProvider.Services;
 
-public class EmailSender : IEmailSender
+public class EmailSender : Microsoft.AspNetCore.Identity.UI.Services.IEmailSender
 {
     private readonly IOptions<EmailSettings> _optionsEmailSettings;
 
@@ -14,18 +13,18 @@ public class EmailSender : IEmailSender
         _optionsEmailSettings = optionsEmailSettings;
     }
 
-    public async Task SendEmail(string email, string subject, string message, string toUsername)
+    public async Task SendEmailAsync(string email, string subject, string htmlMessage)
     {
         var client = new SendGridClient(_optionsEmailSettings.Value.SendGridApiKey);
         var msg = new SendGridMessage();
-        msg.SetFrom(new EmailAddress(_optionsEmailSettings.Value.SenderEmailAddress, "damienbod"));
-        msg.AddTo(new EmailAddress(email, toUsername));
+        msg.SetFrom(new EmailAddress(_optionsEmailSettings.Value.SenderEmailAddress, "duende"));
+        msg.AddTo(new EmailAddress(email));
         msg.SetSubject(subject);
-        msg.AddContent(MimeType.Text, message);
-        //msg.AddContent(MimeType.Html, message);
+        //msg.AddContent(MimeType.Text, message);
+        msg.AddContent(MimeType.Html, htmlMessage);
 
-        msg.SetReplyTo(new EmailAddress(_optionsEmailSettings.Value.SenderEmailAddress, "damienbod"));
+        msg.SetReplyTo(new EmailAddress(_optionsEmailSettings.Value.SenderEmailAddress, "duende"));
 
-        await client.SendEmailAsync(msg);
+        var response = await client.SendEmailAsync(msg);
     }
 }

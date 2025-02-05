@@ -1,7 +1,7 @@
-using ResourceServer.Model;
-using ResourceServer.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ResourceServer.Model;
+using ResourceServer.Repositories;
 
 namespace ResourceServer.Controllers;
 

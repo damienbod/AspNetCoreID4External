@@ -1,5 +1,5 @@
-﻿using ResourceServer.Model;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using ResourceServer.Model;
 
 namespace ResourceServer.Repositories;
 

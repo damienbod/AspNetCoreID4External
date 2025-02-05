@@ -1,7 +1,6 @@
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+// Copyright (c) Duende Software. All rights reserved.
+// See LICENSE in the project root for license information.
+
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Services;
@@ -10,9 +9,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace IdentityServerHost.Pages.Grants;
+namespace IdentityProvider.Pages.Grants;
 
-[SecurityHeaders]
 [Authorize]
 public class Index : PageModel
 {
@@ -32,8 +30,8 @@ public class Index : PageModel
         _events = events;
     }
 
-    public ViewModel View { get; set; }
-        
+    public ViewModel View { get; set; } = default!;
+
     public async Task OnGet()
     {
         var grants = await _interaction.GetAllUserGrantsAsync();
@@ -70,13 +68,13 @@ public class Index : PageModel
     }
 
     [BindProperty]
-    [Required]
-    public string ClientId { get; set; }
+    public string? ClientId { get; set; }
 
     public async Task<IActionResult> OnPost()
     {
         await _interaction.RevokeUserConsentAsync(ClientId);
         await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), ClientId));
+        Telemetry.Metrics.GrantsRevoked(ClientId);
 
         return RedirectToPage("/Grants/Index");
     }

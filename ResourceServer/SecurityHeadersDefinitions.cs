@@ -2,38 +2,25 @@
 
 public static class SecurityHeadersDefinitions
 {
+    private static HeaderPolicyCollection? policy;
+
     public static HeaderPolicyCollection GetHeaderPolicyCollection(bool isDev)
     {
-        var policy = new HeaderPolicyCollection()
+        // Avoid building a new HeaderPolicyCollection on every request for performance reasons.
+        // Where possible, cache and reuse HeaderPolicyCollection instances.
+        if (policy != null) return policy;
+
+        policy = new HeaderPolicyCollection()
             .AddFrameOptionsDeny()
-            .AddXssProtectionBlock()
             .AddContentTypeOptionsNoSniff()
             .AddReferrerPolicyStrictOriginWhenCrossOrigin()
+            .RemoveServerHeader()
             .AddCrossOriginOpenerPolicy(builder => builder.SameOrigin())
             .AddCrossOriginEmbedderPolicy(builder => builder.RequireCorp())
             .AddCrossOriginResourcePolicy(builder => builder.SameOrigin())
-            .RemoveServerHeader()
-            .AddPermissionsPolicy(builder =>
-            {
-                builder.AddAccelerometer().None();
-                builder.AddAutoplay().None();
-                builder.AddCamera().None();
-                builder.AddEncryptedMedia().None();
-                builder.AddFullscreen().All();
-                builder.AddGeolocation().None();
-                builder.AddGyroscope().None();
-                builder.AddMagnetometer().None();
-                builder.AddMicrophone().None();
-                builder.AddMidi().None();
-                builder.AddPayment().None();
-                builder.AddPictureInPicture().None();
-                builder.AddSyncXHR().None();
-                builder.AddUsb().None();
-            });
+            .AddPermissionsPolicyWithDefaultSecureDirectives();
 
         AddCspHstsDefinitions(isDev, policy);
-
-        policy.ApplyDocumentHeadersToAllResponses();
 
         return policy;
     }

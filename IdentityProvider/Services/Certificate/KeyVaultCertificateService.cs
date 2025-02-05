@@ -1,6 +1,6 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using Azure.Security.KeyVault.Certificates;
+﻿using Azure.Security.KeyVault.Certificates;
 using Azure.Security.KeyVault.Secrets;
+using System.Security.Cryptography.X509Certificates;
 
 namespace IdentityProvider.Services.Certificate;
 

@@ -1,61 +1,47 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace IdentityProvider;
+﻿namespace IdentityProvider;
 
 public static class SecurityHeadersDefinitions
 {
-    public static HeaderPolicyCollection GetHeaderPolicyCollection(bool isDev)
+    private static HeaderPolicyCollection? policy;
+
+    public static HeaderPolicyCollection GetHeaderPolicyCollection(bool isDev, string? idpHost)
     {
-        var policy = new HeaderPolicyCollection()
+        ArgumentNullException.ThrowIfNull(idpHost);
+
+        // Avoid building a new HeaderPolicyCollection on every request for performance reasons.
+        // Where possible, cache and reuse HeaderPolicyCollection instances.
+        if (policy != null) return policy;
+
+        policy = new HeaderPolicyCollection()
             .AddFrameOptionsDeny()
-            .AddXssProtectionBlock()
             .AddContentTypeOptionsNoSniff()
             .AddReferrerPolicyStrictOriginWhenCrossOrigin()
             .AddCrossOriginOpenerPolicy(builder => builder.SameOrigin())
-            .AddCrossOriginEmbedderPolicy(builder => builder.RequireCorp())
             .AddCrossOriginResourcePolicy(builder => builder.SameOrigin())
+            .AddCrossOriginEmbedderPolicy(builder => builder.RequireCorp()) // remove for dev if using hot reload
             .AddContentSecurityPolicy(builder =>
             {
                 builder.AddObjectSrc().None();
                 builder.AddBlockAllMixedContent();
                 builder.AddImgSrc().Self().From("data:");
+                builder.AddFormAction()
+                    .Self()
+                    .From(idpHost);
                 builder.AddFontSrc().Self();
-                builder.AddStyleSrc().Self().UnsafeInline();
                 builder.AddBaseUri().Self();
-                builder.AddScriptSrc().Self().UnsafeInline(); //.WithNonce();
-                builder.AddFrameAncestors().Self();
+                builder.AddFrameAncestors().None();
 
-                // removed this for demos add this back with explicit redirects for prod
-                // builder.AddFormAction().Self();
-
-                // builder.AddCustomDirective("require-trusted-types-for", "'script'");
+                builder.AddStyleSrc().Self().UnsafeInline();
+                builder.AddScriptSrc().WithNonce().UnsafeInline();
             })
             .RemoveServerHeader()
-            .AddPermissionsPolicy(builder =>
-            {
-                builder.AddAccelerometer().None();
-                builder.AddAutoplay().None();
-                builder.AddCamera().None();
-                builder.AddEncryptedMedia().None();
-                builder.AddFullscreen().All();
-                builder.AddGeolocation().None();
-                builder.AddGyroscope().None();
-                builder.AddMagnetometer().None();
-                builder.AddMicrophone().None();
-                builder.AddMidi().None();
-                builder.AddPayment().None();
-                builder.AddPictureInPicture().None();
-                builder.AddSyncXHR().None();
-                builder.AddUsb().None();
-            });
+            .AddPermissionsPolicyWithDefaultSecureDirectives();
 
         if (!isDev)
         {
             // maxage = one year in seconds
             policy.AddStrictTransportSecurityMaxAgeIncludeSubDomains(maxAgeInSeconds: 60 * 60 * 24 * 365);
         }
-
-        policy.ApplyDocumentHeadersToAllResponses();
 
         return policy;
     }
