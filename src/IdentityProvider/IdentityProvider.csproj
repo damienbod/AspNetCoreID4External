@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -25,7 +25,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
 
-    <PackageReference Include="Microsoft.Identity.Web" Version="3.6.2" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="3.8.2" />
     <PackageReference Include="Microsoft.Identity.Web.GraphServiceClient" Version="3.6.2" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="3.6.2" />
     <PackageReference Include="Microsoft.Identity.Web.DownstreamApi" Version="3.6.2" />
