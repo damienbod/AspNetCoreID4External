@@ -175,7 +175,7 @@ internal static class HostingExtensions
             DevelopmentCertificatePassword = "1234" //configuration["DevelopmentCertificatePassword"] //"1234",
         };
 
-        (X509Certificate2? ActiveCertificate, X509Certificate2? SecondaryCertificate) certs 
+        (X509Certificate2? ActiveCertificate, X509Certificate2? SecondaryCertificate) certs
             = await CertificateService.GetCertificates(certificateConfiguration);
 
         return certs;
