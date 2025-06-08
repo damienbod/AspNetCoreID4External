@@ -7,3 +7,4 @@
 /ResourceServer/ResourceServer.csproj.user
 /LogFiles/**
 /src/AngularCliClient/.angular/**
+/src/IdentityProvider/keys/**
