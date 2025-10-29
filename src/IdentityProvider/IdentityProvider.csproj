@@ -39,7 +39,7 @@
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders" Version="1.1.0" />
     <PackageReference Include="NetEscapades.AspNetCore.SecurityHeaders.TagHelpers" Version="1.1.0" />
 
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.7.0" />
+    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.9.0" />
   </ItemGroup>
   
 </Project>
