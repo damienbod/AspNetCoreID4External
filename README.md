@@ -40,6 +40,7 @@ Update-Database
 
 ## History 
 
+- 2025-11-30 .NET 10, Angular 21
 - 2025-08-03 Updated packages, Angular 20
 - 2025-06-08 Updated packages, Angular 20
 - 2025-02-06 Angular 19
